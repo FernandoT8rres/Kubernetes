@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Administrators</title>
+	<link rel="stylesheet" href="css/normalize.css">
+	<link rel="stylesheet" href="css/sweetalert2.css">
+	<link rel="stylesheet" href="css/material.min.css">
+	<link rel="stylesheet" href="css/material-design-iconic-font.min.css">
+	<link rel="stylesheet" href="css/jquery.mCustomScrollbar.css">
+	<link rel="stylesheet" href="css/main.css">
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="js/material.min.js"></script>
+	<script src="js/sweetalert2.min.js"></script>
+</head>
+<style>
+	.center-icon {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+	}
+
+	body {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: flex-start;
+		min-height: 100vh;
+		font-family: Arial, sans-serif;
+	}
+
+	section {
+		width: 100%;
+		max-width: 1200px;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		align-items: center;
+		padding: 20px;
+		text-align: center;
+	}
+
+	.tile {
+		width: calc(33.333% - 20px);
+		margin: 10px;
+		padding: 20px;
+		background-color: #f4f4f4;
+		border-radius: 8px;
+		box-shadow: 0 2px 5px rgb(77, 184, 106);
+		transition: transform 0.3s ease;
+		cursor: pointer;
+	}
+
+	.tile:hover {
+		transform: translateY(-5px);
+		box-shadow: 0 5px 15px rgb(77, 184, 106);
+	}
+
+	.tile i {
+		font-size: 48px;
+		margin-bottom: 10px;
+		color: #4CAF50;
+	}
+
+	.tile-text {
+		font-size: 14px;
+	}
+
+	.tile-text small {
+		font-size: 12px;
+		color: #666;
+	}
+
+	/* Responsive styles */
+	@media (max-width: 768px) {
+		nav ul {
+			flex-direction: column;
+		}
+
+		section {
+			flex-direction: column;
+		}
+
+		.tile {
+			width: 90%;
+		}
+	}
+
+	* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		header {
+			background-color: white;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 10px;
+		}
+
+		nav {
+
+			display: grid;
+			flex-wrap: wrap;
+			justify-content: center;
+			align-items: center;
+			text-align: center;
+			align-content: center;
+			padding: 10px 20px;
+		}
+
+		nav ul {
+			list-style: none;
+			display: flex;
+			flex-wrap: wrap;
+			margin: 0;
+			padding: 0;
+			transition: all .3s ease-in-out;
+			border-radius: 5px;
+		}
+
+		nav ul li {
+			position: relative;
+			margin: 0 10px;
+		}
+
+		nav ul li a {
+			text-decoration: none;
+			color: black;
+			padding: 10px 15px;
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			position: relative;
+			transition: all 0.3s ease;
+		}
+
+		nav ul li a:hover {
+			background-color: rgba(40, 167, 69, 0.1);
+			color: #28a745;
+			border-radius: 5px;
+			transform: translateX(5px);
+		}
+
+		nav ul li a span {
+
+			display: block;
+			height: 100%;
+			width: 100%;
+			left: 0;
+			position: absolute;
+			top: -55px;
+			z-index: -1;
+			transition: all 0.3s ease;
+		}
+
+		nav ul li:hover>ul {
+			display: block;
+		}
+
+		nav ul li ul {
+			display: none;
+			position: absolute;
+			top: 100%;
+			left: 0;
+			background-color: #000000;
+			padding: 0;
+			margin: 0;
+			width: 200px;
+			z-index: 10;
+		}
+
+		nav ul li ul li {
+			text-align: left;
+		}
+
+		nav ul li ul li a {
+			padding: 10px 15px;
+			color: black;
+			text-align: left;
+			display: flex;
+			gap: 10px;
+		}
+
+		nav ul li ul li a:hover {
+			background-color: rgba(40, 167, 69, 0.1);
+			color: #28a745;
+			transform: translateX(5px);
+		}
+
+		nav ul li ul {
+			display: none;
+			position: absolute;
+			top: 100%;
+			left: 50%;
+			transform: translateX(-50%);
+			background-color: white;
+			padding: 10px 0;
+			margin: 0;
+			width: 240px;
+			text-align: center;
+			z-index: 10;
+		}
+
+		nav ul li:hover>ul {
+			display: block;
+		}
+
+		nav ul li ul li a {
+			padding: 10px 20px;
+			color: black;
+			text-align: center;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		nav ul li ul li a:hover {
+			background-color: rgba(40, 167, 69, 0.1);
+			color: #28a745;
+			border-radius: 5px;
+			transform: translateX(5px);
+		}
+
+		.user-info {
+			color: black;
+			margin-top: auto;
+			padding: 10px 15px;
+		}
+
+		@media (max-width: 768px) {
+			nav ul li ul {
+				width: 100%;
+				left: 0;
+				transform: none;
+			}
+		}
+
+
+		/* Responsive styles */
+		@media (max-width: 768px) {
+			nav ul {
+				flex-direction: column;
+				width: 100%;
+			}
+
+			nav ul li {
+				width: 100%;
+				text-align: center;
+			}
+
+			nav ul li ul {
+				position: static;
+			}
+		}
+
+		.logo {
+			display: flex;
+			height: 200px;
+			margin-right: 15px;
+		}
+
+		/* Botón hamburguesa */
+		.menu-toggle {
+			display: none;
+			background: none;
+			border: none;
+			font-size: 28px;
+			cursor: pointer;
+			position: fixed;
+			left: 20px;
+			top: 20px;
+			z-index: 20;
+			color: #333;
+		}
+
+		/* Menú desplegable en dispositivos móviles */
+		@media (max-width: 768px) {
+			.menu-toggle {
+				display: block;
+			}
+
+			nav {
+				position: fixed;
+				top: 0;
+				left: -100%;
+				width: 300px;
+				height: 100%;
+				background-color: white;
+				box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+				transition: transform 0.4s ease, left 0.4s ease;
+				z-index: 15;
+			}
+
+			nav.open {
+				left: 0;
+				transform: translateX(0);
+			}
+
+			.user-info {
+				padding: 20px;
+				font-size: 16px;
+				font-weight: 600;
+				color: #666;
+				background-color: #f9f9f9;
+				border-bottom: 1px solid #eaeaea;
+			}
+
+			nav ul {
+				flex-direction: column;
+				padding: 0;
+				margin: 0;
+				list-style: none;
+				width: 100%;
+			}
+
+			nav ul li {
+				width: 100%;
+				text-align: left;
+			}
+
+			nav ul li a {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+				padding: 15px 20px;
+				font-size: 16px;
+				font-weight: 500;
+				color: #333;
+				text-decoration: none;
+				border-bottom: 1px solid #eaeaea;
+				transition: background-color 0.3s ease, transform 0.3s ease;
+			}
+
+			nav ul li a:hover {
+				background-color: rgba(40, 167, 69, 0.1);
+				color: #28a745;
+				transform: translateX(5px);
+			}
+
+			nav ul li ul {
+				display: none;
+				padding-left: 20px;
+				background-color: white;
+			}
+
+			nav ul li:hover>ul {
+				display: block;
+			}
+
+			nav ul li ul li a {
+				padding: 10px 20px;
+				font-size: 14px;
+				color: #555;
+			}
+
+			nav ul li ul li a:hover {
+				background-color: rgba(40, 167, 69, 0.1);
+				color: #28a745;
+			}
+		}
+</style>
+</head>
+
+<body>
+	<header>
+		<div class="logo">
+			<img src="assets/img/cfe-logo.png" alt="logo">
+		</div>
+		<button class="menu-toggle" id="menuToggle">
+			<i class="zmdi zmdi-menu"></i>
+		</button>
+		<nav id="mainNav">
+			<div class="user-info">
+				<span>Bienvenido: <strong id="loggedUser">Cargando...</strong></span>
+			</div>
+			<ul>
+				<li><a href="home.html"><i class="zmdi zmdi-view-dashboard"></i>Inicio</a></li>
+				<li>
+					<a href="#"><i class="zmdi zmdi-case"></i>Administración</a>
+					<ul>
+						<li><a href="providers.html"><i class="zmdi zmdi-truck"></i>Generar Entrada</a></li>
+						<li><a href="sales.html"><i class="zmdi zmdi-shopping-cart"></i>Entradas</a></li>
+						<li><a href="generate.html"><i class="zmdi zmdi-comment-edit"></i>Generar Salida</a></li>
+						<li><a href="exits.html"><i class="zmdi zmdi-square-right"></i>Salidas</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="#"><i class="zmdi zmdi-local-store"></i>Almacén</a>
+					<ul>
+						<li><a href="inventory.html"><i class="zmdi zmdi-local-store"></i>Ver Almacén</a></li>
+						<li><a href="products.html"><i class="zmdi zmdi-plus-circle"></i>Registrar Producto</a></li>
+						<li><a href="edit.html"><i class="zmdi zmdi-edit"></i>Editar Producto</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="#"><i class="zmdi zmdi-face"></i>Usuario</a>
+					<ul>
+						<li><a href="admin.html"><i class="zmdi zmdi-account-o"></i>Administrador</a></li>
+						<li><a href="provider.html"><i class="zmdi zmdi-accounts-add"></i>Proveedores</a></li>
+						<li><a href="dispatcher.html"><i class="zmdi zmdi-accounts-outline"></i>Despachadores</a>
+						</li>
+						<li><a href="client.html"><i class="zmdi zmdi-accounts-alt"></i>Clientes</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="#"><i class="zmdi zmdi-wrench"></i>Ajustes</a>
+					<ul>
+						<li><a href="history.html"><i class="zmdi zmdi-time-restore"></i>Historial</a></li>
+					</ul>
+				</li>
+			</ul>
+		</nav>
+	</header>
+	<section class="full-width header-well">
+		<div class="center-icon header-well-icon">
+			<i class="zmdi zmdi-account"></i>
+		</div>
+	</section>
+	<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+		<div class="mdl-tabs__tab-bar">
+			<a href="#tabNewAdmin" class="mdl-tabs__tab is-active">Nuevo</a>
+			<a href="#tabListAdmin" class="mdl-tabs__tab">Registrados</a>
+		</div>
+		<div class="mdl-tabs__panel is-active" id="tabNewAdmin">
+			<div class="mdl-grid">
+				<div class="mdl-cell mdl-cell--12-col">
+					<div class="full-width panel mdl-shadow--2dp">
+						<div class="full-width panel-tittle bg-primary text-center tittles">
+							Nuevo Administrador
+						</div>
+						<div class="full-width panel-content">
+							<form id="adminForm">
+								<div class="mdl-grid">
+								  <div class="mdl-cell mdl-cell--6-col">
+									<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+									  <input class="mdl-textfield__input" type="text" id="adminUsername" required>
+									  <label class="mdl-textfield__label" for="adminUsername">Nombre de Usuario</label>
+									</div>
+								  </div>
+								  <div class="mdl-cell mdl-cell--6-col">
+									<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+									  <input class="mdl-textfield__input" type="password" id="adminPassword" required>
+									  <label class="mdl-textfield__label" for="adminPassword">Contraseña</label>
+									</div>
+								  </div>
+								  <div class="mdl-cell mdl-cell--6-col">
+									<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+									  <input class="mdl-textfield__input" type="text" id="adminName" required>
+									  <label class="mdl-textfield__label" for="adminName">Nombre</label>
+									</div>
+								  </div>
+								  <div class="mdl-cell mdl-cell--6-col">
+									<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+									  <input class="mdl-textfield__input" type="text" id="adminLastName" required>
+									  <label class="mdl-textfield__label" for="adminLastName">Apellido</label>
+									</div>
+								  </div>
+								</div>
+								<p class="text-center">
+								  <button type="submit" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored bg-primary">
+									<i class="zmdi zmdi-plus"></i>
+								  </button>
+								</p>
+							  </form>							  
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="mdl-tabs__panel" id="tabListAdmin">
+			<div class="mdl-grid">
+				<div class="mdl-cell mdl-cell--12-col">
+					<div class="full-width panel mdl-shadow--2dp">
+						<div class="full-width panel-tittle bg-success text-center tittles">
+							Lista de Administradores
+						</div>
+						<div class="full-width panel-content" id="adminList">
+							<!-- Aquí se generará la lista dinámica -->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	</section>
+	<script>
+	document.addEventListener("DOMContentLoaded", function () {
+		const adminForm = document.getElementById("adminForm");
+		const adminList = document.getElementById("adminList");
+		let editingId = null;
+	
+		// Cargar administradores existentes al cargar la página
+		loadAdmins();
+	
+		// Evento para registrar o actualizar administrador
+		adminForm.addEventListener("submit", function (event) {
+			event.preventDefault();
+			
+			const username = document.getElementById("adminUsername").value.trim();
+			const password = document.getElementById("adminPassword").value.trim();
+			const name = document.getElementById("adminName").value.trim();
+			const lastName = document.getElementById("adminLastName").value.trim();
+	
+			if (username && name && lastName) {
+				// Si estamos editando o creando un nuevo registro
+				if (editingId) {
+					updateAdmin(editingId, username, password, name, lastName);
+				} else {
+					registerAdmin(username, password, name, lastName);
+				}
+			} else {
+				showAlert("Por favor completa todos los campos requeridos.", "error");
+			}
+		});
+	
+		// Función para registrar nuevo administrador
+		function registerAdmin(username, password, name, lastName) {
+			fetch("register_admin.php", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify({
+					username: username,
+					password: password,
+					name: name,
+					lastName: lastName
+				})
+			})
+			.then(response => response.json())
+			.then(data => {
+				if (data.success) {
+					showAlert("Administrador registrado con éxito", "success");
+					adminForm.reset();
+					loadAdmins();
+				} else {
+					showAlert("Error: " + data.message, "error");
+				}
+			})
+			.catch(error => {
+				console.error("Error:", error);
+				showAlert("Error al procesar la solicitud", "error");
+			});
+		}
+	
+		// Función para actualizar administrador
+		function updateAdmin(id, username, password, name, lastName) {
+			const data = {
+				id: id,
+				username: username,
+				name: name,
+				lastName: lastName
+			};
+			
+			// Solo incluir password si se proporcionó uno nuevo
+			if (password) {
+				data.password = password;
+			}
+			
+			fetch("edit_admin.php", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify(data)
+			})
+			.then(response => response.json())
+			.then(data => {
+				if (data.success) {
+					showAlert("Administrador actualizado con éxito", "success");
+					adminForm.reset();
+					// Cambiar el botón de vuelta a "Agregar"
+					document.querySelector("button[type='submit'] i").className = "zmdi zmdi-plus";
+					document.querySelector(".panel-tittle").textContent = "Nuevo Administrador";
+					editingId = null;
+					loadAdmins();
+				} else {
+					showAlert("Error: " + data.message, "error");
+				}
+			})
+			.catch(error => {
+				console.error("Error:", error);
+				showAlert("Error al procesar la solicitud", "error");
+			});
+		}
+	
+		// Cargar la lista de administradores
+		function loadAdmins() {
+			fetch("load_admins.php")
+				.then(response => response.json())
+				.then(data => {
+					adminList.innerHTML = "";
+					if (data.length === 0) {
+						adminList.innerHTML = "<p class='text-center'>No hay administradores registrados.</p>";
+						return;
+					}
+	
+					data.forEach(admin => {
+						const adminItem = document.createElement("div");
+						adminItem.classList.add("mdl-list__item");
+						adminItem.innerHTML = `
+							<span class="mdl-list__item-primary-content">
+								<i class="zmdi zmdi-account mdl-list__item-avatar"></i>
+								<span>${admin.nombre} ${admin.apellido}</span>
+								<span class="mdl-list__item-sub-title">Correo: ${admin.correo}</span>
+							</span>
+							<button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onclick="editAdmin(${admin.id})">
+								<i class="zmdi zmdi-edit"></i>
+							</button>
+							<button class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored" onclick="deleteAdmin(${admin.id})">
+								<i class="zmdi zmdi-delete"></i>
+							</button>
+						`;
+						adminList.appendChild(adminItem);
+						
+						// Agregar separador
+						const separator = document.createElement("hr");
+						adminList.appendChild(separator);
+					});
+				})
+				.catch(error => {
+					console.error("Error:", error);
+					adminList.innerHTML = "<p class='text-center'>Error al cargar administradores.</p>";
+				});
+		}
+	
+		// Función para editar administrador (se llama desde el botón)
+		window.editAdmin = function(id) {
+			fetch(`edit_admin.php?id=${id}`)
+				.then(response => response.json())
+				.then(data => {
+					if (data.success) {
+						const admin = data.data;
+						document.getElementById("adminUsername").value = admin.correo;
+						document.getElementById("adminName").value = admin.nombre;
+						document.getElementById("adminLastName").value = admin.apellido;
+						document.getElementById("adminPassword").value = ""; // No mostrar la contraseña
+						
+						// Cambiar el botón a "Guardar cambios"
+						document.querySelector("button[type='submit'] i").className = "zmdi zmdi-check";
+						document.querySelector(".panel-tittle").textContent = "Editar Administrador";
+						
+						// Cambiar a la pestaña de formulario
+						document.querySelector('a[href="#tabNewAdmin"]').click();
+						
+						// Guardar el ID que estamos editando
+						editingId = admin.id;
+					} else {
+						showAlert("Error: " + data.message, "error");
+					}
+				})
+				.catch(error => {
+					console.error("Error:", error);
+					showAlert("Error al obtener datos del administrador", "error");
+				});
+		};
+	
+		// Función para eliminar administrador (se llama desde el botón)
+		window.deleteAdmin = function(id) {
+			if (confirm("¿Estás seguro de que deseas eliminar este administrador?")) {
+				fetch("delete_admin.php", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json"
+					},
+					body: JSON.stringify({ id: id })
+				})
+				.then(response => response.json())
+				.then(data => {
+					if (data.success) {
+						showAlert("Administrador eliminado con éxito", "success");
+						loadAdmins();
+					} else {
+						showAlert("Error: " + data.message, "error");
+					}
+				})
+				.catch(error => {
+					console.error("Error:", error);
+					showAlert("Error al procesar la solicitud", "error");
+				});
+			}
+		};
+	
+		// Mostrar alertas usando SweetAlert2 o alert normal
+		function showAlert(message, type) {
+			if (window.Swal) {
+				Swal.fire({
+					title: type === 'success' ? '¡Éxito!' : 'Error',
+					text: message,
+					icon: type,
+					confirmButtonText: 'OK'
+				});
+			} else {
+				alert(message);
+			}
+		}
+	
+		// Mostrar nombre de usuario logueado
+		const userFullName = localStorage.getItem("loggedInUser") || "Usuario no identificado";
+		document.getElementById("loggedUser").innerText = userFullName;
+		
+		// Configurar menú móvil
+		const menuToggle = document.getElementById("menuToggle");
+		const mainNav = document.getElementById("mainNav");
+	
+		if (menuToggle && mainNav) {
+			menuToggle.addEventListener("click", function () {
+				mainNav.classList.toggle("open");
+			});
+	
+			document.addEventListener("click", function (event) {
+				if (!mainNav.contains(event.target) && !menuToggle.contains(event.target)) {
+					mainNav.classList.remove("open");
+				}
+			});
+		}
+	});
+	</script>
+</body>
+
+</html>

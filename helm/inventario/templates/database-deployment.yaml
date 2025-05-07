@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.database.name }}
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    app: inventario
+    tier: database
+spec:
+  selector:
+    matchLabels:
+      app: inventario
+      tier: database
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: inventario
+        tier: database
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9104"
+    spec:
+      containers:
+      - name: mysql
+        image: "{{ .Values.database.image.repository }}:{{ .Values.database.image.tag }}"
+        imagePullPolicy: {{ .Values.database.image.pullPolicy }}
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_ROOT_PASSWORD
+        - name: MYSQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_DATABASE
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_USER
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_PASSWORD
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: mysql-persistent-storage
+          mountPath: {{ .Values.database.persistence.mountPath }}
+        - name: mysql-config
+          mountPath: /etc/mysql/conf.d/my.cnf
+          subPath: my.cnf
+        resources:
+          {{- toYaml .Values.database.resources | nindent 12 }}
+        livenessProbe:
+          tcpSocket:
+            port: 3306
+          initialDelaySeconds: {{ .Values.database.probes.liveness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.database.probes.liveness.periodSeconds }}
+          timeoutSeconds: {{ .Values.database.probes.liveness.timeoutSeconds }}
+        readinessProbe:
+          tcpSocket:
+            port: 3306
+          initialDelaySeconds: {{ .Values.database.probes.readiness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.database.probes.readiness.periodSeconds }}
+          timeoutSeconds: {{ .Values.database.probes.readiness.timeoutSeconds }}
+      - name: mysqld-exporter
+        image: prom/mysqld-exporter:v0.14.0
+        env:
+        - name: DATA_SOURCE_NAME
+          value: "root:$(MYSQL_ROOT_PASSWORD)@(localhost:3306)/"
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_ROOT_PASSWORD
+        ports:
+        - containerPort: 9104
+          name: metrics
+      volumes:
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: mysql-pvc
+      - name: mysql-config
+        configMap:
+          name: mysql-config

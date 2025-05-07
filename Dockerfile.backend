@@ -1,0 +1,31 @@
+FROM php:8.0-fpm
+
+# Instalar dependencias
+RUN apt-get update && apt-get install -y \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    zip \
+    unzip \
+    git
+
+# Configurar extensiones PHP
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg
+RUN docker-php-ext-install -j$(nproc) gd mysqli pdo pdo_mysql
+
+# Copiar archivos PHP
+COPY *.php /var/www/html/
+COPY css/ /var/www/html/css/
+COPY js/ /var/www/html/js/
+COPY assets/ /var/www/html/assets/
+COPY fonts/ /var/www/html/fonts/
+
+# Establecer permisos
+RUN chown -R www-data:www-data /var/www/html
+
+# Modificar archivo de configuración de conexión a BD
+COPY kubernetes/backend/db.php /var/www/html/db.php
+
+EXPOSE 9000
+
+CMD ["php-fpm"]

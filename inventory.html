@@ -1,0 +1,1509 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Inventario</title>
+	<link rel="stylesheet" href="css/normalize.css">
+	<link rel="stylesheet" href="css/sweetalert2.css">
+	<link rel="stylesheet" href="css/material.min.css">
+	<link rel="stylesheet" href="css/material-design-iconic-font.min.css">
+	<link rel="stylesheet" href="css/jquery.mCustomScrollbar.css">
+	<link rel="stylesheet" href="css/main.css">
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<script src="js/material.min.js"></script>
+	<script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
+	<script src="js/sweetalert2.min.js"></script>
+	<script src="js/main.js"></script>
+	<script type="module" src="js/history.js"></script>
+
+</head>
+
+<style>
+	.mdl-tabs__panel {
+		position: absolute;
+		top: 65%;
+		bottom: 50%;
+		left: 50%;
+		transform: translate(-50%, 0);
+		z-index: 10;
+		font-size: 48px;
+		margin-bottom: 100px;
+	}
+
+	.center-icon {
+		position: absolute;
+		top: 1%;
+		bottom: 50%;
+		left: 50%;
+		transform: translate(-50%, 0);
+		font-size: 48px;
+		margin-bottom: 100px;
+	}
+
+	@media (max-width: 768px) {
+		.center-icon {
+			font-size: 48px;
+		}
+	}
+
+
+	body {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: flex-start;
+		min-height: 100vh;
+		font-family: Arial, sans-serif;
+	}
+
+	section {
+		width: 100%;
+		max-width: 1200px;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		align-items: center;
+		padding: 20px;
+		text-align: center;
+	}
+
+	.tile {
+		width: calc(33.333% - 20px);
+		margin: 10px;
+		padding: 20px;
+		background-color: #f4f4f4;
+		border-radius: 8px;
+		box-shadow: 0 2px 5px rgb(77, 184, 106);
+		transition: transform 0.3s ease;
+		cursor: pointer;
+	}
+
+	.tile:hover {
+		transform: translateY(-5px);
+		box-shadow: 0 5px 15px rgb(77, 184, 106);
+	}
+
+	.tile i {
+		font-size: 48px;
+		margin-bottom: 10px;
+		color: #4CAF50;
+	}
+
+	.tile-text {
+		font-size: 14px;
+	}
+
+	.tile-text small {
+		font-size: 12px;
+		color: #666;
+	}
+
+	@media (max-width: 1440px) {
+
+		section {
+			flex-direction: column;
+		}
+
+		.tile {
+			width: 900%;
+		}
+	}
+
+	/* Responsive styles */
+	@media (max-width: 768px) {
+		nav ul {
+			flex-direction: column;
+		}
+
+		section {
+			flex-direction: column;
+		}
+
+		.tile {
+			width: 90%;
+		}
+	}
+
+	* {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+	}
+
+	header {
+		background-color: white;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 10px;
+	}
+
+	nav {
+
+		display: grid;
+		flex-wrap: wrap;
+		justify-content: center;
+		align-items: center;
+		text-align: center;
+		align-content: center;
+		padding: 10px 20px;
+	}
+
+	nav ul {
+		list-style: none;
+		display: flex;
+		flex-wrap: wrap;
+		margin: 0;
+		padding: 0;
+		transition: all .3s ease-in-out;
+		border-radius: 5px;
+	}
+
+	nav ul li {
+		position: relative;
+		margin: 0 10px;
+	}
+
+	nav ul li a {
+		text-decoration: none;
+		color: black;
+		padding: 10px 15px;
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		position: relative;
+		transition: all 0.3s ease;
+	}
+
+	nav ul li a:hover {
+		background-color: rgba(40, 167, 69, 0.1);
+		color: #28a745;
+		border-radius: 5px;
+		transform: translateX(5px);
+	}
+
+	nav ul li a span {
+
+		display: block;
+		height: 100%;
+		width: 100%;
+		left: 0;
+		position: absolute;
+		top: -55px;
+		z-index: -1;
+		transition: all 0.3s ease;
+	}
+
+	nav ul li:hover>ul {
+		display: block;
+	}
+
+	nav ul li ul {
+		display: none;
+		position: absolute;
+		top: 100%;
+		left: 0;
+		background-color: #000000;
+		padding: 0;
+		margin: 0;
+		width: 200px;
+		z-index: 10;
+	}
+
+	nav ul li ul li {
+		text-align: left;
+	}
+
+	nav ul li ul li a {
+		padding: 10px 15px;
+		color: black;
+		text-align: left;
+		display: flex;
+		gap: 10px;
+	}
+
+	nav ul li ul li a:hover {
+		background-color: rgba(40, 167, 69, 0.1);
+		color: #28a745;
+		transform: translateX(5px);
+	}
+
+	nav ul li ul {
+		display: none;
+		position: absolute;
+		top: 100%;
+		left: 50%;
+		transform: translateX(-50%);
+		background-color: white;
+		padding: 10px 0;
+		margin: 0;
+		width: 240px;
+		text-align: center;
+		z-index: 10;
+	}
+
+	nav ul li:hover>ul {
+		display: block;
+	}
+
+	nav ul li ul li a {
+		padding: 10px 20px;
+		color: black;
+		text-align: center;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	nav ul li ul li a:hover {
+		background-color: rgba(40, 167, 69, 0.1);
+		color: #28a745;
+		border-radius: 5px;
+		transform: translateX(5px);
+	}
+
+	.user-info {
+		color: black;
+		margin-top: auto;
+		padding: 10px 15px;
+	}
+
+	@media (max-width: 768px) {
+		nav ul li ul {
+			width: 100%;
+			left: 0;
+			transform: none;
+		}
+	}
+
+
+	/* Responsive styles */
+	@media (max-width: 768px) {
+		nav ul {
+			flex-direction: column;
+			width: 100%;
+		}
+
+		nav ul li {
+			width: 100%;
+			text-align: center;
+		}
+
+		nav ul li ul {
+			position: static;
+		}
+	}
+
+	.logo {
+		display: flex;
+		height: 200px;
+		margin-right: 15px;
+	}
+
+	/* Botón hamburguesa */
+	.menu-toggle {
+		display: none;
+		background: none;
+		border: none;
+		font-size: 28px;
+		cursor: pointer;
+		position: fixed;
+		left: 20px;
+		top: 20px;
+		z-index: 20;
+		color: #333;
+	}
+
+	/* Menú desplegable en dispositivos móviles */
+	@media (max-width: 768px) {
+		.menu-toggle {
+			display: block;
+		}
+
+		nav {
+			position: fixed;
+			top: 0;
+			left: -100%;
+			width: 300px;
+			height: 100%;
+			background-color: white;
+			box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+			transition: transform 0.4s ease, left 0.4s ease;
+			z-index: 15;
+		}
+
+		nav.open {
+			left: 0;
+			transform: translateX(0);
+		}
+
+		.user-info {
+			padding: 20px;
+			font-size: 16px;
+			font-weight: 600;
+			color: #666;
+			background-color: #f9f9f9;
+			border-bottom: 1px solid #eaeaea;
+		}
+
+		nav ul {
+			flex-direction: column;
+			padding: 0;
+			margin: 0;
+			list-style: none;
+			width: 100%;
+		}
+
+		nav ul li {
+			width: 100%;
+			text-align: left;
+		}
+
+		nav ul li a {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			padding: 15px 20px;
+			font-size: 16px;
+			font-weight: 500;
+			color: #333;
+			text-decoration: none;
+			border-bottom: 1px solid #eaeaea;
+			transition: background-color 0.3s ease, transform 0.3s ease;
+		}
+
+		nav ul li a:hover {
+			background-color: rgba(40, 167, 69, 0.1);
+			color: #28a745;
+			transform: translateX(5px);
+		}
+
+		nav ul li ul {
+			display: none;
+			padding-left: 20px;
+			background-color: white;
+		}
+
+		nav ul li:hover>ul {
+			display: block;
+		}
+
+		nav ul li ul li a {
+			padding: 10px 20px;
+			font-size: 14px;
+			color: #555;
+		}
+
+		nav ul li ul li a:hover {
+			background-color: rgba(40, 167, 69, 0.1);
+			color: #28a745;
+		}
+	}
+
+	body {
+		font-family: Arial, sans-serif;
+		text-align: center;
+	}
+
+	button {
+		padding: 10px;
+		background: #4CAF50;
+		color: white;
+		border: none;
+		cursor: pointer;
+		margin: 5px;
+	}
+
+	.storage-item {
+		background: #ddd;
+		margin: 5px;
+		padding: 10px;
+		cursor: pointer;
+		display: inline-block;
+		border-radius: 5px;
+		transition: background 0.3s;
+	}
+
+	.storage-item:hover {
+		background: #ccc;
+	}
+
+	#inventory-list {
+		list-style: none;
+		padding: 0;
+	}
+
+	/* Estilos para modal */
+	.modal {
+		display: none;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(0, 0, 0, 0.5);
+	}
+
+	.modal-content {
+		background: white;
+		padding: 20px;
+		margin: 15% auto;
+		width: 300px;
+		position: relative;
+	}
+
+	.close {
+		position: absolute;
+		top: 10px;
+		right: 10px;
+		cursor: pointer;
+	}
+</style>
+
+<body>
+	<header>
+		<div class="logo">
+			<img src="assets/img/cfe-logo.png" alt="logo">
+		</div>
+		<button class="menu-toggle" id="menuToggle">
+			<i class="zmdi zmdi-menu"></i>
+		</button>
+		<nav id="mainNav">
+			<div class="user-info">
+				<span>Bienvenido: <strong id="loggedUser">Cargando...</strong></span>
+			</div>
+			<ul>
+				<li><a href="home.html"><i class="zmdi zmdi-view-dashboard"></i>Inicio</a></li>
+				<li>
+					<a href="#"><i class="zmdi zmdi-case"></i>Administración</a>
+					<ul>
+						<li><a href="providers.html"><i class="zmdi zmdi-truck"></i>Generar Entrada</a></li>
+						<li><a href="sales.html"><i class="zmdi zmdi-shopping-cart"></i>Entradas</a></li>
+						<li><a href="generate.html"><i class="zmdi zmdi-comment-edit"></i>Generar Salida</a></li>
+						<li><a href="exits.html"><i class="zmdi zmdi-square-right"></i>Salidas</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="#"><i class="zmdi zmdi-local-store"></i>Almacén</a>
+					<ul>
+						<li><a href="inventory.html"><i class="zmdi zmdi-local-store"></i>Ver Almacén</a></li>
+						<li><a href="products.html"><i class="zmdi zmdi-plus-circle"></i>Registrar Producto</a></li>
+						<li><a href="edit.html"><i class="zmdi zmdi-edit"></i>Editar Producto</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="#"><i class="zmdi zmdi-face"></i>Usuario</a>
+					<ul>
+						<li><a href="admin.html"><i class="zmdi zmdi-account-o"></i>Administrador</a></li>
+						<li><a href="provider.html"><i class="zmdi zmdi-accounts-add"></i>Proveedores</a></li>
+						<li><a href="dispatcher.html"><i class="zmdi zmdi-accounts-outline"></i>Despachadores</a>
+						</li>
+						<li><a href="client.html"><i class="zmdi zmdi-accounts-alt"></i>Clientes</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="#"><i class="zmdi zmdi-wrench"></i>Ajustes</a>
+					<ul>
+						<li><a href="history.html"><i class="zmdi zmdi-time-restore"></i>Historial</a></li>
+					</ul>
+				</li>
+			</ul>
+		</nav>
+	</header>
+	<section class="full-width header-well">
+		<div class="center-icon">
+			<i class="zmdi zmdi-assignment"></i>
+		</div>
+		<div class="full-width header-well-text">
+			<p class="text-condensedLight"></p>
+		</div>
+	</section>
+
+	<div class="full-width divider-menu-h"></div>
+
+	
+
+<!-- Sección de filtros -->
+<div class="filter-section">
+    <h3>Filtros de Búsqueda</h3>
+    <div class="filter-controls">
+        <div class="filter-group">
+            <label for="filterType">Filtrar por:</label>
+            <select id="filterType" class="mdl-textfield__input">
+                <option value="all">Todos los campos</option>
+                <option value="nombre_producto">Nombre</option>
+                <option value="codigo">Código</option>
+                <option value="unidades_stock">Stock</option>
+                <option value="precio_compra">Precio de Compra</option>
+                <option value="precio_venta">Precio de Venta</option>
+                <option value="fecha">Fecha</option>
+            </select>
+        </div>
+        <div class="mdl-grid">
+			<div class="full-width">
+				<input type="text" id="searchBox" class="mdl-textfield__input" placeholder="Buscar producto..."
+					style="width: 100%; margin-bottom: 20px;">
+			</div>
+		</div>
+    </div>
+</div>
+
+<!-- Gestión de almacenes -->
+<div class="storage-management">
+    <h3>Gestión de Almacenes</h3>
+    <button id="btnAddStorage" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+        <i class="zmdi zmdi-plus"></i> Registrar Nuevo Almacén
+    </button>
+    <button id="btnManageStorage" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent">
+        <i class="zmdi zmdi-settings"></i> Administrar Almacenes
+    </button>
+</div>
+
+<!-- Botones para seleccionar almacenes -->
+<div id="storage-buttons" class="storage-buttons">
+    <button onclick="loadProducts('all')" class="mdl-button mdl-js-button mdl-button--raised">Todos los Productos</button>
+    <button onclick="loadProducts('sin_almacen')" class="mdl-button mdl-js-button mdl-button--raised">Productos sin Almacén</button>
+    <!-- Aquí se agregarán dinámicamente los botones de almacenes -->
+</div>
+
+<!-- Lista de productos -->
+<div id="inventory-list" class="inventory-list">
+    <!-- Aquí se mostrarán los productos -->
+    <p>Cargando productos...</p>
+</div>
+
+<!-- Modal para agregar/editar almacén -->
+<div id="storageModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3 id="modalTitle">Registrar Nuevo Almacén</h3>
+        <form id="storageForm">
+            <input type="hidden" id="storageId">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="storageName" required>
+                <label class="mdl-textfield__label" for="storageName">Nombre del Almacén</label>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="storageLocation">
+                <label class="mdl-textfield__label" for="storageLocation">Ubicación (opcional)</label>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <textarea class="mdl-textfield__input" id="storageDescription" rows="3"></textarea>
+                <label class="mdl-textfield__label" for="storageDescription">Descripción (opcional)</label>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+                    Guardar
+                </button>
+                <button type="button" class="mdl-button mdl-js-button mdl-button--raised" onclick="closeModal()">
+                    Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Modal para mover productos a otro almacén -->
+<div id="moveProductModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Mover Producto a Otro Almacén</h3>
+        <form id="moveProductForm">
+            <input type="hidden" id="moveProductId">
+            <p>Producto: <strong id="moveProductName">-</strong></p>
+            
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <select class="mdl-textfield__input" id="storageSelect" required>
+                    <option value="sin_almacen">-- Sin almacén --</option>
+                    <!-- Las opciones se cargarán dinámicamente -->
+                </select>
+                <label class="mdl-textfield__label" for="storageSelect">Selecciona un almacén</label>
+            </div>
+            
+            <div class="form-actions">
+                <button type="button" onclick="moveProduct()" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+                    Mover Producto
+                </button>
+                <button type="button" class="mdl-button mdl-js-button mdl-button--raised" onclick="closeModal()">
+                    Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Estilos adicionales para el modal de mover productos -->
+<style>
+    /* Ajustes para el modal de mover productos */
+    #moveProductModal .modal-content {
+        max-width: 400px;
+    }
+    
+    #moveProductModal p {
+        margin-bottom: 20px;
+    }
+    
+    #storageSelect {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+</style>
+<!-- Modal para administrar almacenes -->
+<div id="manageStorageModal" class="modal">
+    <div class="modal-content modal-large">
+        <span class="close">&times;</span>
+        <h3>Administrar Almacenes</h3>
+        <div id="storagesList" class="storages-list">
+            <!-- Aquí se mostrarán los almacenes -->
+            <p>Cargando almacenes...</p>
+        </div>
+    </div>
+</div>
+
+<!-- Agregar este estilo adicional -->
+<style>
+    /* Estilos para filtros */
+    .filter-section {
+        margin: 20px 0;
+        padding: 15px;
+        background-color: #f5f5f5;
+        border-radius: 8px;
+    }
+    
+    .filter-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-top: 10px;
+    }
+    
+    .filter-group {
+        flex: 1;
+        min-width: 200px;
+    }
+    
+    /* Estilos para la gestión de almacenes */
+    .storage-management {
+        margin: 20px 0;
+        padding: 15px;
+        background-color: #e8f5e9;
+        border-radius: 8px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        align-items: center;
+    }
+    
+    /* Botones de almacenes */
+    .storage-buttons {
+        margin: 20px 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    /* Productos más pequeños y con mejor diseño */
+    .product-item {
+        background: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        margin: 10px 0;
+        padding: 10px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: transform 0.2s ease;
+        font-size: 14px;
+    }
+    
+    .product-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    
+    .product-item h3 {
+        color: #28a745;
+        margin-top: 0;
+        margin-bottom: 8px;
+        font-size: 16px;
+    }
+    
+    .product-item p {
+        margin: 4px 0;
+    }
+    
+    .product-item .product-actions {
+        margin-top: 8px;
+        display: flex;
+        gap: 8px;
+    }
+    
+    .inventory-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: flex-start;
+    }
+    
+    /* Modales más estilizados */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+    }
+    
+    .modal-content {
+        background-color: #fefefe;
+        margin: 10% auto;
+        padding: 20px;
+        border-radius: 8px;
+        width: 80%;
+        max-width: 500px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        position: relative;
+    }
+    
+    .modal-large {
+        max-width: 800px;
+    }
+    
+    .close {
+        position: absolute;
+        right: 20px;
+        top: 15px;
+        font-size: 28px;
+        font-weight: bold;
+        color: #aaa;
+        cursor: pointer;
+    }
+    
+    .close:hover {
+        color: #333;
+    }
+    
+    /* Formulario de almacén */
+    .form-actions {
+        margin-top: 20px;
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+    }
+    
+    /* Lista de almacenes */
+    .storages-list {
+        margin-top: 20px;
+    }
+    
+    .storage-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+    }
+    
+    .storage-info {
+        flex: 1;
+    }
+    
+    .storage-actions {
+        display: flex;
+        gap: 8px;
+    }
+    
+    /* Responsive */
+    @media (min-width: 768px) {
+        .product-item {
+            width: calc(33.333% - 10px);
+        }
+    }
+    
+    @media (min-width: 1200px) {
+        .product-item {
+            width: calc(25% - 10px);
+        }
+    }
+    
+    @media (max-width: 767px) {
+        .product-item {
+            width: calc(50% - 10px);
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .product-item {
+            width: 100%;
+        }
+        
+        .filter-controls {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<!-- No incluir el script aquí, ya que lo agregaremos por separado -->
+<script>
+  // Variables globales
+let allProducts = []; // Para almacenar todos los productos cargados
+let currentStorageId = 'all'; // Almacén actualmente seleccionado
+
+// Ejecutar cuando el DOM esté completamente cargado
+document.addEventListener("DOMContentLoaded", function () {
+    // Cargar el nombre de usuario
+    const userFullName = localStorage.getItem("loggedInUser") || "Usuario no identificado";
+    document.getElementById("loggedUser").innerText = userFullName;
+    
+    // Configurar evento para el botón de salida si existe
+    const btnExit = document.getElementById("btn-exit");
+    if (btnExit) {
+        btnExit.addEventListener("click", function () {
+            localStorage.removeItem("loggedInUser");
+            window.location.href = "login.html";
+        });
+    }
+    
+    // Configurar el toggle del menú móvil
+    const menuToggle = document.getElementById("menuToggle");
+    const mainNav = document.getElementById("mainNav");
+    
+    if (menuToggle && mainNav) {
+        menuToggle.addEventListener("click", function () {
+            mainNav.classList.toggle("open");
+        });
+        
+        document.addEventListener("click", function (event) {
+            if (!mainNav.contains(event.target) && !menuToggle.contains(event.target)) {
+                mainNav.classList.remove("open");
+            }
+        });
+    }
+    
+    // Configurar búsqueda y filtros
+    setupFilters();
+    
+    // Configurar modales y botones de almacén
+    setupStorageModals();
+    
+    // Cargar los botones de almacenes
+    loadStorageButtons();
+    
+    // Cargar todos los productos por defecto
+    loadProducts('all');
+});
+
+// Configurar filtros de búsqueda
+function setupFilters() {
+    const searchBox = document.getElementById("searchBox");
+    const filterType = document.getElementById("filterType");
+    
+    if (searchBox) {
+        searchBox.addEventListener("input", function() {
+            filterProducts();
+        });
+    }
+    
+    if (filterType) {
+        filterType.addEventListener("change", function() {
+            filterProducts();
+        });
+    }
+}
+
+// Función para filtrar productos según los criterios seleccionados
+function filterProducts() {
+    const searchBox = document.getElementById("searchBox");
+    const filterType = document.getElementById("filterType");
+    
+    if (!searchBox || !filterType) return;
+    
+    const searchText = searchBox.value.toLowerCase();
+    const filterBy = filterType.value;
+    
+    const productItems = document.querySelectorAll('.product-item');
+    
+    productItems.forEach(item => {
+        const productData = item._productData; // Datos completos del producto guardados en el elemento
+        
+        if (!productData) return;
+        
+        let match = false;
+        
+        if (filterBy === 'all') {
+            // Buscar en todos los campos
+            match = JSON.stringify(productData).toLowerCase().includes(searchText);
+        } else {
+            // Buscar en el campo específico
+            const fieldValue = String(productData[filterBy] || '').toLowerCase();
+            match = fieldValue.includes(searchText);
+        }
+        
+        item.style.display = match ? '' : 'none';
+    });
+}
+
+// Configurar modales y botones para gestión de almacenes
+function setupStorageModals() {
+    // Botones para abrir modales
+    const btnAddStorage = document.getElementById("btnAddStorage");
+    const btnManageStorage = document.getElementById("btnManageStorage");
+    
+    // Modales
+    const storageModal = document.getElementById("storageModal");
+    const manageStorageModal = document.getElementById("manageStorageModal");
+    
+    // Elementos de cierre
+    const closeBtns = document.querySelectorAll(".close");
+    
+    // Formulario de almacén
+    const storageForm = document.getElementById("storageForm");
+    
+    // Configurar botones para abrir modales
+    if (btnAddStorage && storageModal) {
+        btnAddStorage.addEventListener("click", function() {
+            // Reset form for new storage
+            document.getElementById("modalTitle").innerText = "Registrar Nuevo Almacén";
+            document.getElementById("storageId").value = "";
+            document.getElementById("storageName").value = "";
+            document.getElementById("storageLocation").value = "";
+            document.getElementById("storageDescription").value = "";
+            
+            storageModal.style.display = "block";
+        });
+    }
+    
+    if (btnManageStorage && manageStorageModal) {
+        btnManageStorage.addEventListener("click", function() {
+            loadStoragesList();
+            manageStorageModal.style.display = "block";
+        });
+    }
+    
+    // Configurar cierre de modales
+    closeBtns.forEach(btn => {
+        btn.addEventListener("click", function() {
+            storageModal.style.display = "none";
+            manageStorageModal.style.display = "none";
+        });
+    });
+    
+    // Cerrar al hacer clic fuera del modal
+    window.addEventListener("click", function(event) {
+        if (event.target === storageModal) {
+            storageModal.style.display = "none";
+        }
+        if (event.target === manageStorageModal) {
+            manageStorageModal.style.display = "none";
+        }
+    });
+    
+    // Manejar envío del formulario de almacén
+    if (storageForm) {
+        storageForm.addEventListener("submit", function(e) {
+            e.preventDefault();
+            saveStorage();
+        });
+    }
+}
+
+// Función para cerrar modales
+function closeModal() {
+    document.getElementById("storageModal").style.display = "none";
+    document.getElementById("manageStorageModal").style.display = "none";
+}
+
+// Función para guardar un almacén (nuevo o editado)
+function saveStorage() {
+    const storageId = document.getElementById("storageId").value;
+    const storageName = document.getElementById("storageName").value;
+    const storageLocation = document.getElementById("storageLocation").value;
+    const storageDescription = document.getElementById("storageDescription").value;
+    
+    if (!storageName) {
+        alert("El nombre del almacén es obligatorio");
+        return;
+    }
+    
+    // Preparar datos
+    const formData = new FormData();
+    formData.append("name", storageName);
+    formData.append("location", storageLocation);
+    formData.append("description", storageDescription);
+    
+    // Si hay ID, es una edición
+    if (storageId) {
+        formData.append("id", storageId);
+    }
+    
+    // Enviar datos al servidor
+    fetch('save_storage.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error al guardar almacén: ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            // Mostrar mensaje de éxito
+            alert(data.message || "Almacén guardado correctamente");
+            
+            // Cerrar modal
+            closeModal();
+            
+            // Recargar botones de almacén y productos
+            loadStorageButtons();
+            loadProducts(currentStorageId);
+        } else {
+            alert(data.message || "Error al guardar el almacén");
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al guardar el almacén: ' + error.message);
+    });
+}
+// Función para mostrar el modal de mover productos
+function showMoveProductModal(productId, productName) {
+    // Guardar el ID del producto en el modal
+    document.getElementById("moveProductId").value = productId;
+    
+    // Mostrar nombre del producto en el modal
+    document.getElementById("moveProductName").innerText = productName;
+    
+    // Cargar los almacenes disponibles en el select
+    loadStoragesForSelect();
+    
+    // Mostrar el modal
+    document.getElementById("moveProductModal").style.display = "block";
+}
+
+// Función para cargar los almacenes en el select
+function loadStoragesForSelect() {
+    const storageSelect = document.getElementById("storageSelect");
+    
+    if (!storageSelect) return;
+    
+    // Limpiar opciones existentes pero mantener la opción "Sin almacén"
+    storageSelect.innerHTML = '<option value="sin_almacen">-- Sin almacén --</option>';
+    
+    // Cargar almacenes desde el servidor
+    fetch('get_storages.php')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al obtener almacenes: ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (Array.isArray(data)) {
+                data.forEach(storage => {
+                    const option = document.createElement('option');
+                    option.value = storage.id;
+                    option.textContent = storage.nombre_almacen;
+                    storageSelect.appendChild(option);
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error al cargar almacenes:', error);
+            storageSelect.innerHTML += '<option disabled>Error al cargar almacenes</option>';
+        });
+}
+
+// Función para mover un producto a otro almacén
+function moveProduct() {
+    const productId = document.getElementById("moveProductId").value;
+    const storageId = document.getElementById("storageSelect").value;
+    
+    if (!productId) {
+        alert("Error: No se ha seleccionado un producto");
+        return;
+    }
+    
+    // Preparar datos para enviar
+    const formData = new FormData();
+    formData.append("product_id", productId);
+    formData.append("storage_id", storageId);
+    
+    // Enviar solicitud al servidor
+    fetch('move_product.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error al mover producto: ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            // Mostrar mensaje de éxito
+            alert(data.message);
+            
+            // Cerrar el modal
+            document.getElementById("moveProductModal").style.display = "none";
+            
+            // Recargar productos con el filtro actual
+            loadProducts(currentStorageId);
+        } else {
+            alert(data.message || "Error al mover el producto");
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al mover el producto: ' + error.message);
+    });
+}
+
+// Función para añadir el botón de mover a las acciones del producto
+function addMoveButtonToProduct(productItem, product) {
+    const actionsDiv = productItem.querySelector('.product-actions');
+    
+    if (actionsDiv) {
+        // Crear botón de mover
+        const moveButton = document.createElement('button');
+        moveButton.className = 'mdl-button mdl-js-button mdl-button--icon';
+        moveButton.innerHTML = '<i class="zmdi zmdi-swap"></i>';
+        moveButton.title = 'Mover a otro almacén';
+        moveButton.onclick = function(e) {
+            e.stopPropagation(); // Evitar que se propague el evento
+            showMoveProductModal(product.id, product.nombre_producto);
+        };
+        
+        // Añadir botón a las acciones
+        actionsDiv.appendChild(moveButton);
+    }
+}
+// Función para cargar los botones de almacenes
+function loadStorageButtons() {
+    fetch('get_storages.php')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al obtener almacenes: ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            const storageButtons = document.getElementById('storage-buttons');
+            
+            // Mantener solo los botones fijos (Todos y Sin Almacén)
+            if (storageButtons) {
+                // Eliminar botones dinámicos existentes (mantener solo los primeros 2 fijos)
+                while (storageButtons.children.length > 2) {
+                    storageButtons.removeChild(storageButtons.lastChild);
+                }
+                
+                // Agregar botones para cada almacén
+                if (Array.isArray(data)) {
+                    data.forEach(storage => {
+                        const button = document.createElement('button');
+                        button.className = 'mdl-button mdl-js-button mdl-button--raised';
+                        button.innerText = storage.nombre_almacen;
+                        button.onclick = () => loadProducts(storage.id);
+                        storageButtons.appendChild(button);
+                    });
+                } else {
+                    console.error('Error: datos de almacenes inválidos');
+                }
+            } else {
+                console.error('Error: storage-buttons no encontrado');
+            }
+        })
+        .catch(error => {
+            console.error('Error al cargar almacenes:', error);
+            alert('No se pudieron cargar los almacenes. Por favor, intente de nuevo más tarde.');
+        });
+}
+
+// Función para cargar la lista de almacenes en el modal de administración
+function loadStoragesList() {
+    const storagesList = document.getElementById('storagesList');
+    
+    if (!storagesList) return;
+    
+    storagesList.innerHTML = "<p>Cargando almacenes...</p>";
+    
+    fetch('get_storages.php')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al obtener almacenes: ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            storagesList.innerHTML = "";
+            
+            if (!Array.isArray(data) || data.length === 0) {
+                storagesList.innerHTML = "<p>No hay almacenes registrados.</p>";
+                return;
+            }
+            
+            // Crear tabla para almacenes
+            const table = document.createElement('table');
+            table.className = 'mdl-data-table mdl-js-data-table mdl-shadow--2dp';
+            table.style.width = '100%';
+            
+            // Encabezados
+            const thead = document.createElement('thead');
+            thead.innerHTML = `
+                <tr>
+                    <th class="mdl-data-table__cell--non-numeric">Nombre</th>
+                    <th class="mdl-data-table__cell--non-numeric">Ubicación</th>
+                    <th class="mdl-data-table__cell--non-numeric">Descripción</th>
+                    <th class="mdl-data-table__cell--non-numeric">Acciones</th>
+                </tr>
+            `;
+            table.appendChild(thead);
+            
+            // Cuerpo de la tabla
+            const tbody = document.createElement('tbody');
+            
+            data.forEach(storage => {
+                const tr = document.createElement('tr');
+                
+                tr.innerHTML = `
+                    <td class="mdl-data-table__cell--non-numeric">${storage.nombre_almacen || ''}</td>
+                    <td class="mdl-data-table__cell--non-numeric">${storage.ubicacion || 'N/A'}</td>
+                    <td class="mdl-data-table__cell--non-numeric">${storage.descripcion || 'N/A'}</td>
+                    <td class="mdl-data-table__cell--non-numeric">
+                        <button class="mdl-button mdl-js-button mdl-button--icon" onclick="editStorage('${storage.id}')">
+                            <i class="zmdi zmdi-edit"></i>
+                        </button>
+                        <button class="mdl-button mdl-js-button mdl-button--icon mdl-button--accent" onclick="deleteStorage('${storage.id}')">
+                            <i class="zmdi zmdi-delete"></i>
+                        </button>
+                    </td>
+                `;
+                
+                tbody.appendChild(tr);
+            });
+            
+            table.appendChild(tbody);
+            storagesList.appendChild(table);
+            
+            // Si MDL está disponible, actualizar los componentes dinámicos
+            if (typeof componentHandler !== 'undefined') {
+                componentHandler.upgradeAllRegistered();
+            }
+        })
+        .catch(error => {
+            console.error('Error al cargar almacenes:', error);
+            storagesList.innerHTML = `<p>Error al cargar almacenes: ${error.message}</p>`;
+        });
+}
+
+// Función para editar un almacén
+function editStorage(storageId) {
+    // Cerrar modal de administración
+    document.getElementById("manageStorageModal").style.display = "none";
+    
+    // Obtener datos del almacén
+    fetch(`get_storage.php?id=${storageId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al obtener almacén: ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (!data) {
+                alert("No se encontró el almacén");
+                return;
+            }
+            
+            // Llenar formulario con datos del almacén
+            document.getElementById("modalTitle").innerText = "Editar Almacén";
+            document.getElementById("storageId").value = data.id;
+            document.getElementById("storageName").value = data.nombre_almacen || '';
+            document.getElementById("storageLocation").value = data.ubicacion || '';
+            document.getElementById("storageDescription").value = data.descripcion || '';
+            
+            // Mostrar modal
+            document.getElementById("storageModal").style.display = "block";
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al cargar datos del almacén: ' + error.message);
+        });
+}
+
+// Función para eliminar un almacén
+function deleteStorage(storageId) {
+    if (!confirm("¿Estás seguro de eliminar este almacén? Esta acción no se puede deshacer.")) {
+        return;
+    }
+    
+    fetch('delete_storage.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `id=${storageId}`
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error al eliminar almacén: ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            alert(data.message || "Almacén eliminado correctamente");
+            loadStoragesList(); // Recargar lista
+            loadStorageButtons(); // Actualizar botones
+            
+            // Si estábamos viendo este almacén, volver a "todos"
+            if (currentStorageId === storageId) {
+                loadProducts('all');
+            }
+        } else {
+            alert(data.message || "Error al eliminar el almacén");
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al eliminar el almacén: ' + error.message);
+    });
+}
+
+// Función para cargar productos según el almacén seleccionado
+// Función corregida para cargar productos y añadir botón de mover
+function loadProducts(storageId) {
+    // Guardar el almacén actual
+    currentStorageId = storageId;
+    
+    // Mostrar indicador de carga
+    const inventoryList = document.getElementById("inventory-list");
+    if (!inventoryList) {
+        console.error('Error: inventory-list no encontrado');
+        return;
+    }
+    
+    inventoryList.innerHTML = "<p>Cargando productos...</p>";
+    
+    fetch(`get_products.php?storage_id=${storageId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al obtener productos: ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Guardar productos para filtrado posterior
+            allProducts = data;
+            
+            // Limpiar y mostrar los productos
+            inventoryList.innerHTML = "";
+            
+            if (data.error) {
+                inventoryList.innerHTML = `<p>Error: ${data.error}</p>`;
+                return;
+            }
+            
+            if (!Array.isArray(data) || data.length === 0) {
+                inventoryList.innerHTML = "<p>No hay productos disponibles en este almacén.</p>";
+                return;
+            }
+            
+            data.forEach(product => {
+                const productItem = document.createElement("div");
+                productItem.className = "product-item";
+                
+                // Guardar datos completos del producto en el elemento para filtrado
+                productItem._productData = product;
+                
+                productItem.innerHTML = `
+                    <h3>${product.nombre_producto || 'Sin nombre'}</h3>
+                    <p><strong>Código:</strong> ${product.codigo || 'N/A'}</p>
+                    <p><strong>Stock:</strong> ${product.unidades_stock || '0'}</p>
+                    <p><strong>Precio:</strong> $${product.precio_venta || '0'}</p>
+                    <p><strong>Almacén:</strong> ${product.almacen || 'Sin asignar'}</p>
+                    <div class="product-actions">
+                        <button onclick="editProduct(${product.id})" class="mdl-button mdl-js-button mdl-button--icon" title="Editar">
+                            <i class="zmdi zmdi-edit"></i>
+                        </button>
+                        <button onclick="viewProductDetails(${product.id})" class="mdl-button mdl-js-button mdl-button--icon" title="Ver detalles">
+                            <i class="zmdi zmdi-info"></i>
+                        </button>
+                        <!-- El botón de mover se añade mediante JavaScript -->
+                    </div>
+                `;
+                
+                inventoryList.appendChild(productItem);
+                
+                // Añadir botón de mover al producto (definido en move_product_js)
+                addMoveButtonToProduct(productItem, product);
+            });
+            
+            // Si MDL está disponible, actualizar los componentes dinámicos
+            if (typeof componentHandler !== 'undefined') {
+                componentHandler.upgradeAllRegistered();
+            }
+            
+            // Aplicar filtros actuales
+            filterProducts();
+        })
+        .catch(error => {
+            console.error('Error al cargar productos:', error);
+            inventoryList.innerHTML = `<p>Error al cargar productos: ${error.message}</p>`;
+        });
+}
+
+// Actualizar la función closeModal para cerrar todos los modales
+function closeModal() {
+    document.getElementById("storageModal").style.display = "none";
+    document.getElementById("manageStorageModal").style.display = "none";
+    document.getElementById("moveProductModal").style.display = "none";
+}
+
+// Función para editar un producto
+function editProduct(productId) {
+    // Redirigir a la página de edición con el ID del producto
+    window.location.href = `edit.html?id=${productId}`;
+}
+
+// Función para ver detalles completos del producto
+function viewProductDetails(productId) {
+    // Buscar el producto en los datos cargados
+    const product = allProducts.find(p => p.id == productId);
+    
+    if (!product) {
+        alert("Producto no encontrado");
+        return;
+    }
+    
+    // Mostrar detalles en un modal o alerta (se puede mejorar con un modal personalizado)
+    const details = `
+        Nombre: ${product.nombre_producto || 'Sin nombre'}
+        Código: ${product.codigo || 'N/A'}
+        Stock: ${product.unidades_stock || '0'}
+        Stock Mínimo: ${product.stock_minimo || '0'}
+        Stock Máximo: ${product.stock_maximo || '0'}
+        Precio de Compra: $${product.precio_compra || '0'}
+        IVA: ${product.iva || '0'}%
+        Precio de Venta: $${product.precio_venta || '0'}
+        Fecha: ${product.fecha || 'No especificada'}
+        Almacén: ${product.almacen || 'Sin asignar'}
+        Anotaciones: ${product.Anotaciones || 'Sin anotaciones'}
+    `;
+    
+    alert(details);
+}
+		</script>
+
+		</style>
+</body>
+
+</html>

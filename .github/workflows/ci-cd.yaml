@@ -1,0 +1,152 @@
+name: CI/CD Pipeline with Monitoring
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+env:
+  AWS_REGION: us-east-1
+  EKS_CLUSTER_NAME: inventario-eks-cluster
+  ECR_REPOSITORY_PREFIX: inventario
+
+jobs:
+  ci:
+    name: Continuous Integration
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Set ECR Repository URL
+        run: |
+          echo "ECR_REPOSITORY_URL=${{ steps.login-ecr.outputs.registry }}" >> $GITHUB_ENV
+
+      - name: Build and tag Frontend Docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./Dockerfile.frontend
+          push: false
+          tags: ${{ env.ECR_REPOSITORY_URL }}/${{ env.ECR_REPOSITORY_PREFIX }}-frontend:latest
+          load: true
+
+      - name: Build and tag Backend Docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./Dockerfile.backend
+          push: false
+          tags: ${{ env.ECR_REPOSITORY_URL }}/${{ env.ECR_REPOSITORY_PREFIX }}-backend:latest
+          load: true
+
+      - name: Build and tag Database Docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./Dockerfile.database
+          push: false
+          tags: ${{ env.ECR_REPOSITORY_URL }}/${{ env.ECR_REPOSITORY_PREFIX }}-mysql:latest
+          load: true
+
+      - name: Push Frontend Docker image
+        if: github.event_name == 'push'
+        run: |
+          docker push ${{ env.ECR_REPOSITORY_URL }}/${{ env.ECR_REPOSITORY_PREFIX }}-frontend:latest
+
+      - name: Push Backend Docker image
+        if: github.event_name == 'push'
+        run: |
+          docker push ${{ env.ECR_REPOSITORY_URL }}/${{ env.ECR_REPOSITORY_PREFIX }}-backend:latest
+
+      - name: Push Database Docker image
+        if: github.event_name == 'push'
+        run: |
+          docker push ${{ env.ECR_REPOSITORY_URL }}/${{ env.ECR_REPOSITORY_PREFIX }}-mysql:latest
+
+  cd:
+    name: Continuous Deployment
+    needs: ci
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Set ECR Repository URL
+        run: |
+          echo "ECR_REPOSITORY_URL=${{ steps.login-ecr.outputs.registry }}" >> $GITHUB_ENV
+
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: 'v3.11.1'
+
+      - name: Replace placeholders in values.yaml
+        run: |
+          sed -i "s|\${ECR_REPOSITORY_URL}|${{ env.ECR_REPOSITORY_URL }}|g" ./helm/inventario/values.yaml
+
+      - name: Deploy with Helm
+        run: |
+          helm upgrade --install inventario ./helm/inventario \
+            --namespace inventario-system \
+            --create-namespace \
+            --set global.imageRegistry=${{ env.ECR_REPOSITORY_URL }}
+          
+      - name: Install Prometheus Operator (if not exists)
+        run: |
+          if ! kubectl get crd prometheuses.monitoring.coreos.com > /dev/null 2>&1; then
+            echo "Installing Prometheus Operator..."
+            kubectl create -f ./monitoring/prometheus-rbac.yaml
+            kubectl create -f ./monitoring/prometheus-config.yaml
+            kubectl create -f ./monitoring/prometheus-deployment.yaml
+            kubectl create -f ./monitoring/prometheus-service.yaml
+          else
+            echo "Prometheus CRD already exists, skipping installation"
+          fi
+
+      - name: Install Grafana
+        run: |
+          kubectl apply -f ./monitoring/grafana/grafana-configmap.yaml
+          kubectl apply -f ./monitoring/grafana/grafana-secret.yaml
+          kubectl apply -f ./monitoring/grafana/grafana-deployment.yaml
+          kubectl apply -f ./monitoring/grafana/grafana-service.yaml
+
+      - name: Verify Deployments
+        run: |
+          echo "Waiting for deployments to be ready..."
+          kubectl -n inventario-system rollout status deployment/frontend
+          kubectl -n inventario-system rollout status deployment/backend
+          kubectl -n inventario-system rollout status deployment/mysql
+          kubectl -n inventario-system rollout status deployment/prometheus
+          kubectl -n inventario-system rollout status deployment/grafana

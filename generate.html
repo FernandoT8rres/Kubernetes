@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Generar Salida</title>
+	<link rel="stylesheet" href="css/normalize.css">
+	<link rel="stylesheet" href="css/sweetalert2.css">
+	<link rel="stylesheet" href="css/material.min.css">
+	<link rel="stylesheet" href="css/material-design-iconic-font.min.css">
+	<link rel="stylesheet" href="css/jquery.mCustomScrollbar.css">
+	<link rel="stylesheet" href="css/main.css">
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<script>window.jQuery || document.write('<script src="js/jquery-1.11.2.min.js"><\/script>')</script>
+	<script src="js/material.min.js"></script>
+	<script src="js/sweetalert2.min.js"></script>
+	<script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
+	<script src="js/main.js"></script>
+	<script type="module" src="js/history.js"></script>
+
+</head>
+<style>
+	.mdl-tabs__panel {
+
+		top: 15%;
+		bottom: 10%;
+		left: 50%;
+		transform: translate(-50%, 0);
+		z-index: 10;
+		font-size: 48px;
+		margin-top: 50px;
+	}
+
+	.center-icon {
+		font-size: 48px;
+		margin-top: 10px;
+
+	}
+
+	body {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: flex-start;
+		min-height: 100vh;
+		font-family: Arial, sans-serif;
+	}
+
+	section {
+		width: 100%;
+		max-width: 1200px;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		align-items: center;
+		padding: 20px;
+		text-align: center;
+	}
+
+	.tile {
+		width: calc(33.333% - 20px);
+		margin: 10px;
+		padding: 20px;
+		background-color: #f4f4f4;
+		border-radius: 8px;
+		box-shadow: 0 2px 5px rgb(77, 184, 106);
+		transition: transform 0.3s ease;
+		cursor: pointer;
+	}
+
+	.tile:hover {
+		transform: translateY(-5px);
+		box-shadow: 0 5px 15px rgb(77, 184, 106);
+	}
+
+	.tile i {
+		font-size: 48px;
+		margin-bottom: 10px;
+		color: #4CAF50;
+	}
+
+	.tile-text {
+		font-size: 14px;
+	}
+
+	.tile-text small {
+		font-size: 12px;
+		color: #666;
+	}
+
+	@media (max-width: 1440px) {
+
+		section {
+			flex-direction: column;
+		}
+
+		.tile {
+			width: 900%;
+		}
+	}
+
+	/* Responsive styles */
+	@media (max-width: 768px) {
+		nav ul {
+			flex-direction: column;
+		}
+
+		section {
+			flex-direction: column;
+		}
+
+		.tile {
+			width: 90%;
+		}
+	}
+
+	* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		header {
+			background-color: white;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 10px;
+		}
+
+		nav {
+
+			display: grid;
+			flex-wrap: wrap;
+			justify-content: center;
+			align-items: center;
+			text-align: center;
+			align-content: center;
+			padding: 10px 20px;
+		}
+
+		nav ul {
+			list-style: none;
+			display: flex;
+			flex-wrap: wrap;
+			margin: 0;
+			padding: 0;
+			transition: all .3s ease-in-out;
+			border-radius: 5px;
+		}
+
+		nav ul li {
+			position: relative;
+			margin: 0 10px;
+		}
+
+		nav ul li a {
+			text-decoration: none;
+			color: black;
+			padding: 10px 15px;
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			position: relative;
+			transition: all 0.3s ease;
+		}
+
+		nav ul li a:hover {
+			background-color: rgba(40, 167, 69, 0.1);
+			color: #28a745;
+			border-radius: 5px;
+			transform: translateX(5px);
+		}
+
+		nav ul li a span {
+
+			display: block;
+			height: 100%;
+			width: 100%;
+			left: 0;
+			position: absolute;
+			top: -55px;
+			z-index: -1;
+			transition: all 0.3s ease;
+		}
+
+		nav ul li:hover>ul {
+			display: block;
+		}
+
+		nav ul li ul {
+			display: none;
+			position: absolute;
+			top: 100%;
+			left: 0;
+			background-color: #000000;
+			padding: 0;
+			margin: 0;
+			width: 200px;
+			z-index: 10;
+		}
+
+		nav ul li ul li {
+			text-align: left;
+		}
+
+		nav ul li ul li a {
+			padding: 10px 15px;
+			color: black;
+			text-align: left;
+			display: flex;
+			gap: 10px;
+		}
+
+		nav ul li ul li a:hover {
+			background-color: rgba(40, 167, 69, 0.1);
+			color: #28a745;
+			transform: translateX(5px);
+		}
+
+		nav ul li ul {
+			display: none;
+			position: absolute;
+			top: 100%;
+			left: 50%;
+			transform: translateX(-50%);
+			background-color: white;
+			padding: 10px 0;
+			margin: 0;
+			width: 240px;
+			text-align: center;
+			z-index: 10;
+		}
+
+		nav ul li:hover>ul {
+			display: block;
+		}
+
+		nav ul li ul li a {
+			padding: 10px 20px;
+			color: black;
+			text-align: center;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		nav ul li ul li a:hover {
+			background-color: rgba(40, 167, 69, 0.1);
+			color: #28a745;
+			border-radius: 5px;
+			transform: translateX(5px);
+		}
+
+		.user-info {
+			color: black;
+			margin-top: auto;
+			padding: 10px 15px;
+		}
+
+		@media (max-width: 768px) {
+			nav ul li ul {
+				width: 100%;
+				left: 0;
+				transform: none;
+			}
+		}
+
+
+		/* Responsive styles */
+		@media (max-width: 768px) {
+			nav ul {
+				flex-direction: column;
+				width: 100%;
+			}
+
+			nav ul li {
+				width: 100%;
+				text-align: center;
+			}
+
+			nav ul li ul {
+				position: static;
+			}
+		}
+
+		.logo {
+			display: flex;
+			height: 200px;
+			margin-right: 15px;
+		}
+
+		/* Botón hamburguesa */
+		.menu-toggle {
+			display: none;
+			background: none;
+			border: none;
+			font-size: 28px;
+			cursor: pointer;
+			position: fixed;
+			left: 20px;
+			top: 20px;
+			z-index: 20;
+			color: #333;
+		}
+
+		/* Menú desplegable en dispositivos móviles */
+		@media (max-width: 768px) {
+			.menu-toggle {
+				display: block;
+			}
+
+			nav {
+				position: fixed;
+				top: 0;
+				left: -100%;
+				width: 300px;
+				height: 100%;
+				background-color: white;
+				box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+				transition: transform 0.4s ease, left 0.4s ease;
+				z-index: 15;
+			}
+
+			nav.open {
+				left: 0;
+				transform: translateX(0);
+			}
+
+			.user-info {
+				padding: 20px;
+				font-size: 16px;
+				font-weight: 600;
+				color: #666;
+				background-color: #f9f9f9;
+				border-bottom: 1px solid #eaeaea;
+			}
+
+			nav ul {
+				flex-direction: column;
+				padding: 0;
+				margin: 0;
+				list-style: none;
+				width: 100%;
+			}
+
+			nav ul li {
+				width: 100%;
+				text-align: left;
+			}
+
+			nav ul li a {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+				padding: 15px 20px;
+				font-size: 16px;
+				font-weight: 500;
+				color: #333;
+				text-decoration: none;
+				border-bottom: 1px solid #eaeaea;
+				transition: background-color 0.3s ease, transform 0.3s ease;
+			}
+
+			nav ul li a:hover {
+				background-color: rgba(40, 167, 69, 0.1);
+				color: #28a745;
+				transform: translateX(5px);
+			}
+
+			nav ul li ul {
+				display: none;
+				padding-left: 20px;
+				background-color: white;
+			}
+
+			nav ul li:hover>ul {
+				display: block;
+			}
+
+			nav ul li ul li a {
+				padding: 10px 20px;
+				font-size: 14px;
+				color: #555;
+			}
+
+			nav ul li ul li a:hover {
+				background-color: rgba(40, 167, 69, 0.1);
+				color: #28a745;
+			}
+		}
+
+	.center-icon {
+		position: absolute;
+		top: 30%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+	}
+	header{
+		padding-bottom: 200px;
+	}
+	@media (max-width: 390px) {
+		.center-icon {
+		position: absolute;
+		top: 30%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+	}
+	header{
+		padding-bottom: 520px;
+	}
+	}
+	@media (max-width: 790px) {
+		.center-icon {
+		position: absolute;
+		top: 30%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+	}
+	header{
+		padding-bottom: 520px;
+	}
+	}
+</style>
+</head>
+
+<body>
+	<header>
+		<div class="logo">
+			<img src="assets/img/cfe-logo.png" alt="logo">
+		</div>
+		<button class="menu-toggle" id="menuToggle">
+			<i class="zmdi zmdi-menu"></i>
+		</button>
+		<nav id="mainNav">
+			<div class="user-info">
+				<span>Bienvenido: <strong id="loggedUser">Cargando...</strong></span>
+			</div>
+			<ul>
+				<li><a href="home.html"><i class="zmdi zmdi-view-dashboard"></i>Inicio</a></li>
+				<li>
+					<a href="#"><i class="zmdi zmdi-case"></i>Administración</a>
+					<ul>
+						<li><a href="providers.html"><i class="zmdi zmdi-truck"></i>Generar Entrada</a></li>
+						<li><a href="sales.html"><i class="zmdi zmdi-shopping-cart"></i>Entradas</a></li>
+						<li><a href="generate.html"><i class="zmdi zmdi-comment-edit"></i>Generar Salida</a></li>
+						<li><a href="exits.html"><i class="zmdi zmdi-square-right"></i>Salidas</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="#"><i class="zmdi zmdi-local-store"></i>Almacén</a>
+					<ul>
+						<li><a href="inventory.html"><i class="zmdi zmdi-local-store"></i>Ver Almacén</a></li>
+						<li><a href="products.html"><i class="zmdi zmdi-plus-circle"></i>Registrar Producto</a></li>
+						<li><a href="edit.html"><i class="zmdi zmdi-edit"></i>Editar Producto</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="#"><i class="zmdi zmdi-face"></i>Usuario</a>
+					<ul>
+						<li><a href="admin.html"><i class="zmdi zmdi-account-o"></i>Administrador</a></li>
+						<li><a href="provider.html"><i class="zmdi zmdi-accounts-add"></i>Proveedores</a></li>
+						<li><a href="dispatcher.html"><i class="zmdi zmdi-accounts-outline"></i>Despachadores</a>
+						</li>
+						<li><a href="client.html"><i class="zmdi zmdi-accounts-alt"></i>Clientes</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="#"><i class="zmdi zmdi-wrench"></i>Ajustes</a>
+					<ul>
+						<li><a href="history.html"><i class="zmdi zmdi-time-restore"></i>Historial</a></li>
+					</ul>
+				</li>
+			</ul>
+		</nav>
+		<div class="center-icon">
+			<i class="zmdi zmdi-comment-edit"></i>
+		</div>
+	</header>
+	
+	<section class="full-width header-well">
+		<h3 class="text-center tittles"></h3>
+		<div class="mdl-grid">
+			<div class="mdl-cell mdl-cell--12-col mdl-cell--8-col-tablet mdl-cell--4-col-phone">
+				<div class="full-width panel mdl-shadow--2dp">
+					<div class="full-width panel-tittle bg-primary text-center tittles">
+						Formulario de Salida de Inventario
+					</div>
+					<div class="full-width panel-content">
+						<form id="generate-exit-form">
+							<div class="mdl-grid">
+								<div class="mdl-cell mdl-cell--12-col">
+									<legend class="text-condensedLight"><i class="zmdi zmdi-border-color"></i>
+										&nbsp; Detalles de la Salida</legend><br>
+								</div>
+								<div class="mdl-cell mdl-cell--6-col mdl-cell--8-col-tablet">
+									<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+										<select class="mdl-textfield__input" id="product-id" required>
+											<option value="" disabled selected>Selecciona un producto</option>
+										</select>
+										<label class="mdl-textfield__label" for="product-id"></label>
+									</div>
+								</div>
+								<div class="mdl-cell mdl-cell--6-col mdl-cell--8-col-tablet">
+									<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+										<input class="mdl-textfield__input" type="text" id="product-name" readonly>
+										<label class="mdl-textfield__label" for="product-name">Nombre del
+											Producto</label>
+									</div>
+								</div>
+								<div class="mdl-cell mdl-cell--4-col mdl-cell--8-col-tablet">
+									<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+										<input class="mdl-textfield__input" type="number" min="1" id="quantity-exit"
+											required>
+										<label class="mdl-textfield__label" for="quantity-exit">Cantidad a
+											Descontar</label>
+									</div>
+								</div>
+								<div class="mdl-cell mdl-cell--4-col mdl-cell--8-col-tablet">
+									<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+										<input class="mdl-textfield__input" type="text" id="exit-date" readonly>
+									</div>
+								</div>
+								<div class="mdl-cell mdl-cell--4-col mdl-cell--8-col-tablet">
+									<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+										<input class="mdl-textfield__input" type="text" id="remarks" required>
+										<label class="mdl-textfield__label" for="remarks">Observaciones</label>
+									</div>
+								</div>
+								<div class="mdl-cell mdl-cell--6-col mdl-cell--8-col-tablet">
+									<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+										<select class="mdl-textfield__input" id="client-id" required>
+											<option value="" disabled selected>Selecciona un cliente</option>
+										</select>
+										<label class="mdl-textfield__label" for="client-id"></label>
+									</div>
+								</div>
+							</div>
+							<p class="text-center">
+								<button type="submit"
+									class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+									Generar Salida
+								</button>
+							</p>
+							<p id="successMessage" style="display:none;color:green;">Salida registrada con
+								éxito!</p>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	</section>
+	<script>
+		document.getElementById("generate-exit-form").addEventListener("submit", async function (event) {
+    event.preventDefault();
+    const productId = document.getElementById("product-id").value;
+    const quantity = document.getElementById("quantity-exit").value;
+    const remarks = document.getElementById("remarks").value;
+
+    const response = await fetch("generate_exit.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId, quantity, remarks })
+    });
+
+    const data = await response.json();
+    if (data.success) {
+        alert("Salida generada con éxito.");
+        // Opcional: Recargar la lista de salidas
+    } else {
+        alert(data.message);
+    }
+});
+		$(document).ready(function () {
+			const inventory = JSON.parse(localStorage.getItem('inventory')) || [];
+			const clients = JSON.parse(localStorage.getItem('clients')) || [];
+
+			// Poblar el select de productos
+			inventory.forEach(product => {
+				$('#product-id').append(
+					`<option value="${product.id}" data-name="${product.name}" data-quantity="${product.stock}">${product.name}</option>`
+				);
+			});
+
+			// Poblar el select de clientes con nombre completo
+			clients.forEach(client => {
+				const clientLastName = `${client.name} ${client.lastname}`;
+				$('#client-id').append(
+					`<option value="${client.id}" data-clientLastName="${clientLastName}" data-email="${client.email}">${clientLastName}</option>`
+				);
+			});
+
+			// Mostrar el nombre completo del cliente al seleccionarlo
+			$('#client-id').change(function () {
+				const selectedOption = $(this).find(':selected');
+				const clientLastName = selectedOption.data('clientLastName');
+				$('#clientLastName').val(clientLastName || '');
+			});
+
+			// Mostrar el nombre y cantidad disponible del producto al seleccionarlo
+			$('#product-id').change(function () {
+				const selectedOption = $(this).find(':selected');
+				const productName = selectedOption.data('name');
+				const productStock = selectedOption.data('quantity');
+				$('#product-name').val(productName || '');
+				$('#quantity-exit').attr('max', productStock || 0);
+			});
+
+			// Establecer fecha actual
+			const today = new Date().toISOString().split('T')[0];
+			$('#exit-date').val(today);
+
+			// Manejar el envío del formulario
+			$('#generate-exit-form').on('submit', function (e) {
+				e.preventDefault();
+
+				const clientId = $('#client-id').val();
+				const clientLastName = $('#clientLastName').val();
+				const productId = $('#product-id').val();
+				const productName = $('#product-name').val();
+				const quantityExit = parseInt($('#quantity-exit').val());
+				const remarks = $('#remarks').val();
+				const exitDate = $('#exit-date').val();
+
+				if (!clientId || !productId || !quantityExit || !remarks) {
+					alert('Por favor, completa todos los campos.');
+					return;
+				}
+
+				const productIndex = inventory.findIndex(product => product.id === productId);
+
+				if (productIndex === -1 || quantityExit > inventory[productIndex].stock) {
+					alert('Stock insuficiente para realizar la salida.');
+					return;
+				}
+
+				// Actualizar el inventario
+				inventory[productIndex].stock -= quantityExit;
+				localStorage.setItem('inventory', JSON.stringify(inventory));
+
+				// Registrar la salida
+				const exits = JSON.parse(localStorage.getItem('exits')) || [];
+				const exitRecord = {
+					clientId,
+					clientLastName,
+					productId,
+					productName,
+					quantityExit,
+					remarks,
+					exitDate
+				};
+				exits.push(exitRecord);
+				localStorage.setItem('exits', JSON.stringify(exits));
+
+				// Mostrar mensaje de éxito
+				$('#successMessage').fadeIn().delay(2000).fadeOut();
+				$('#generate-exit-form')[0].reset();
+
+				$('#product-name').val('');
+				$('#clientLastName').val('');
+				$('#exit-date').val(today); // Reestablecer fecha
+			});
+		});
+
+		document.addEventListener("DOMContentLoaded", function () {
+			const userclientLastName = localStorage.getItem("loggedInUser") || "Usuario no identificado";
+			document.getElementById("loggedUser").innerText = userclientLastName;
+		});
+
+		document.getElementById("btn-exit")?.addEventListener("click", function () {
+			localStorage.removeItem("loggedInUser");
+			window.location.href = "login.html";
+		});
+		document.addEventListener("DOMContentLoaded", function () {
+			const menuToggle = document.getElementById("menuToggle");
+			const mainNav = document.getElementById("mainNav");
+
+			// Mostrar/ocultar el menú al hacer clic en el botón
+			menuToggle.addEventListener("click", function () {
+				mainNav.classList.toggle("open"); // Alterna entre mostrar y ocultar el menú
+			});
+
+			// Cerrar el menú al hacer clic fuera de él
+			document.addEventListener("click", function (event) {
+				if (!mainNav.contains(event.target) && !menuToggle.contains(event.target)) {
+					mainNav.classList.remove("open");
+				}
+			});
+		});
+	</script>
+
+</body>
+
+</html>

@@ -1,0 +1,74 @@
+body {
+  background-color: #f0f0f0;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+.lg-container {
+  width: 300px;
+  background-color: #fff;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin: 40px auto;
+}
+
+.container_psw {
+  background-color: #fff;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin: 40px auto;
+}
+
+.lg-logo {
+  width: 100px;
+  height: 100px;
+  margin: 20px auto;
+  border-radius: 50%;
+}
+
+#user,
+.password,
+.Login,
+.remember {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.Login button {
+  background-color: #4CAF50;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.Login button:hover {
+  background-color: #3e8e41;
+}
+
+.remember {
+  font-size: 14px;
+}
+
+.remember input {
+  margin-right: 10px;
+}
+
+.psw {
+  font-size: 14px;
+  color: #999;
+}
+
+.psw a {
+  text-decoration: wavy;
+  color: #4CAF50;
+}
+
+.psw a:hover {
+  color: #3e8e41;
+}

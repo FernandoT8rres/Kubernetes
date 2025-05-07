@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Sales - Registro de Pedidos</title>
+	<link rel="stylesheet" href="css/normalize.css">
+	<link rel="stylesheet" href="css/sweetalert2.css">
+	<link rel="stylesheet" href="css/material.min.css">
+	<link rel="stylesheet" href="css/material-design-iconic-font.min.css">
+	<link rel="stylesheet" href="css/jquery.mCustomScrollbar.css">
+	<link rel="stylesheet" href="css/main.css">
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<script>window.jQuery || document.write('<script src="js/jquery-1.11.2.min.js"><\/script>')</script>
+	<script src="js/material.min.js"></script>
+	<script src="js/sweetalert2.min.js"></script>
+	<script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
+	<script src="js/main.js"></script>
+	<script type="module" src="js/history.js"></script>
+	<style>
+		.action-icon {
+			cursor: pointer;
+			font-size: 24px;
+			margin: 0 8px;
+			color: #607D8B;
+			/* Color gris */
+			transition: color 0.3s;
+		}
+
+		.action-icon:hover {
+			color: #00796B;
+			/* Color verde */
+		}
+
+		.action-icon[title]:hover::after {
+			content: attr(title);
+			position: absolute;
+			background: #333;
+			color: #fff;
+			padding: 5px 10px;
+			border-radius: 5px;
+			top: -35px;
+			left: 50%;
+			transform: translateX(-50%);
+			white-space: nowrap;
+			font-size: 12px;
+			opacity: 0.9;
+			pointer-events: none;
+		}
+
+		.mdl-tabs__panel {
+			position: absolute;
+			top: 65%;
+			bottom: 50%;
+			left: 50%;
+			transform: translate(-50%, 0);
+			z-index: 10;
+			font-size: 48px;
+			margin-bottom: 100px;
+		}
+
+		.center-icon {
+			position: absolute;
+			top: 1%;
+			bottom: 50%;
+			left: 50%;
+			transform: translate(-50%, 0);
+			font-size: 48px;
+			margin-bottom: 100px;
+		}
+
+		@media (max-width: 768px) {
+			.center-icon {
+				font-size: 48px;
+			}
+		}
+
+
+		body {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: flex-start;
+			min-height: 100vh;
+			font-family: Arial, sans-serif;
+		}
+
+		section {
+			width: 100%;
+			max-width: 1200px;
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: center;
+			align-items: center;
+			padding: 20px;
+			text-align: center;
+		}
+
+		.tile {
+			width: calc(33.333% - 20px);
+			margin: 10px;
+			padding: 20px;
+			background-color: #f4f4f4;
+			border-radius: 8px;
+			box-shadow: 0 2px 5px rgb(77, 184, 106);
+			transition: transform 0.3s ease;
+			cursor: pointer;
+		}
+
+		.tile:hover {
+			transform: translateY(-5px);
+			box-shadow: 0 5px 15px rgb(77, 184, 106);
+		}
+
+		.tile i {
+			font-size: 48px;
+			margin-bottom: 10px;
+			color: #4CAF50;
+		}
+
+		.tile-text {
+			font-size: 14px;
+		}
+
+		.tile-text small {
+			font-size: 12px;
+			color: #666;
+		}
+
+		@media (max-width: 1440px) {
+
+			section {
+				flex-direction: column;
+			}
+
+			.tile {
+				width: 900%;
+			}
+		}
+
+		/* Responsive styles */
+		@media (max-width: 768px) {
+			nav ul {
+				flex-direction: column;
+			}
+
+			section {
+				flex-direction: column;
+			}
+
+			.tile {
+				width: 90%;
+			}
+		}
+
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		header {
+			background-color: white;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 10px;
+		}
+
+		nav {
+
+			display: grid;
+			flex-wrap: wrap;
+			justify-content: center;
+			align-items: center;
+			text-align: center;
+			align-content: center;
+			padding: 10px 20px;
+		}
+
+		nav ul {
+			list-style: none;
+			display: flex;
+			flex-wrap: wrap;
+			margin: 0;
+			padding: 0;
+			transition: all .3s ease-in-out;
+			border-radius: 5px;
+		}
+
+		nav ul li {
+			position: relative;
+			margin: 0 10px;
+		}
+
+		nav ul li a {
+			text-decoration: none;
+			color: black;
+			padding: 10px 15px;
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			position: relative;
+			transition: all 0.3s ease;
+		}
+
+		nav ul li a:hover {
+			background-color: rgba(40, 167, 69, 0.1);
+			color: #28a745;
+			border-radius: 5px;
+			transform: translateX(5px);
+		}
+
+		nav ul li a span {
+
+			display: block;
+			height: 100%;
+			width: 100%;
+			left: 0;
+			position: absolute;
+			top: -55px;
+			z-index: -1;
+			transition: all 0.3s ease;
+		}
+
+		nav ul li:hover>ul {
+			display: block;
+		}
+
+		nav ul li ul {
+			display: none;
+			position: absolute;
+			top: 100%;
+			left: 0;
+			background-color: #000000;
+			padding: 0;
+			margin: 0;
+			width: 200px;
+			z-index: 10;
+		}
+
+		nav ul li ul li {
+			text-align: left;
+		}
+
+		nav ul li ul li a {
+			padding: 10px 15px;
+			color: black;
+			text-align: left;
+			display: flex;
+			gap: 10px;
+		}
+
+		nav ul li ul li a:hover {
+			background-color: rgba(40, 167, 69, 0.1);
+			color: #28a745;
+			transform: translateX(5px);
+		}
+
+		nav ul li ul {
+			display: none;
+			position: absolute;
+			top: 100%;
+			left: 50%;
+			transform: translateX(-50%);
+			background-color: white;
+			padding: 10px 0;
+			margin: 0;
+			width: 240px;
+			text-align: center;
+			z-index: 10;
+		}
+
+		nav ul li:hover>ul {
+			display: block;
+		}
+
+		nav ul li ul li a {
+			padding: 10px 20px;
+			color: black;
+			text-align: center;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		nav ul li ul li a:hover {
+			background-color: rgba(40, 167, 69, 0.1);
+			color: #28a745;
+			border-radius: 5px;
+			transform: translateX(5px);
+		}
+
+		.user-info {
+			color: black;
+			margin-top: auto;
+			padding: 10px 15px;
+		}
+
+		@media (max-width: 768px) {
+			nav ul li ul {
+				width: 100%;
+				left: 0;
+				transform: none;
+			}
+		}
+
+
+		/* Responsive styles */
+		@media (max-width: 768px) {
+			nav ul {
+				flex-direction: column;
+				width: 100%;
+			}
+
+			nav ul li {
+				width: 100%;
+				text-align: center;
+			}
+
+			nav ul li ul {
+				position: static;
+			}
+		}
+
+		.logo {
+			display: flex;
+			height: 200px;
+			margin-right: 15px;
+		}
+
+		/* Botón hamburguesa */
+		.menu-toggle {
+			display: none;
+			background: none;
+			border: none;
+			font-size: 28px;
+			cursor: pointer;
+			position: fixed;
+			left: 20px;
+			top: 20px;
+			z-index: 20;
+			color: #333;
+		}
+
+		/* Menú desplegable en dispositivos móviles */
+		@media (max-width: 768px) {
+			.menu-toggle {
+				display: block;
+			}
+
+			nav {
+				position: fixed;
+				top: 0;
+				left: -100%;
+				width: 300px;
+				height: 100%;
+				background-color: white;
+				box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+				transition: transform 0.4s ease, left 0.4s ease;
+				z-index: 15;
+			}
+
+			nav.open {
+				left: 0;
+				transform: translateX(0);
+			}
+
+			.user-info {
+				padding: 20px;
+				font-size: 16px;
+				font-weight: 600;
+				color: #666;
+				background-color: #f9f9f9;
+				border-bottom: 1px solid #eaeaea;
+			}
+
+			nav ul {
+				flex-direction: column;
+				padding: 0;
+				margin: 0;
+				list-style: none;
+				width: 100%;
+			}
+
+			nav ul li {
+				width: 100%;
+				text-align: left;
+			}
+
+			nav ul li a {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+				padding: 15px 20px;
+				font-size: 16px;
+				font-weight: 500;
+				color: #333;
+				text-decoration: none;
+				border-bottom: 1px solid #eaeaea;
+				transition: background-color 0.3s ease, transform 0.3s ease;
+			}
+
+			nav ul li a:hover {
+				background-color: rgba(40, 167, 69, 0.1);
+				color: #28a745;
+				transform: translateX(5px);
+			}
+
+			nav ul li ul {
+				display: none;
+				padding-left: 20px;
+				background-color: white;
+			}
+
+			nav ul li:hover>ul {
+				display: block;
+			}
+
+			nav ul li ul li a {
+				padding: 10px 20px;
+				font-size: 14px;
+				color: #555;
+			}
+
+			nav ul li ul li a:hover {
+				background-color: rgba(40, 167, 69, 0.1);
+				color: #28a745;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<header>
+		<div class="logo">
+			<img src="assets/img/cfe-logo.png" alt="logo">
+		</div>
+		<button class="menu-toggle" id="menuToggle">
+			<i class="zmdi zmdi-menu"></i>
+		</button>
+		<nav id="mainNav">
+			<div class="user-info">
+				<span>Bienvenido: <strong id="loggedUser">Cargando...</strong></span>
+			</div>
+			<ul>
+				<li><a href="home.html"><i class="zmdi zmdi-view-dashboard"></i>Inicio</a></li>
+				<li>
+					<a href="#"><i class="zmdi zmdi-case"></i>Administración</a>
+					<ul>
+						<li><a href="providers.html"><i class="zmdi zmdi-truck"></i>Generar Entrada</a></li>
+						<li><a href="sales.html"><i class="zmdi zmdi-shopping-cart"></i>Entradas</a></li>
+						<li><a href="generate.html"><i class="zmdi zmdi-comment-edit"></i>Generar Salida</a></li>
+						<li><a href="exits.html"><i class="zmdi zmdi-square-right"></i>Salidas</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="#"><i class="zmdi zmdi-local-store"></i>Almacén</a>
+					<ul>
+						<li><a href="inventory.html"><i class="zmdi zmdi-local-store"></i>Ver Almacén</a></li>
+						<li><a href="products.html"><i class="zmdi zmdi-plus-circle"></i>Registrar Producto</a></li>
+						<li><a href="edit.html"><i class="zmdi zmdi-edit"></i>Editar Producto</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="#"><i class="zmdi zmdi-face"></i>Usuario</a>
+					<ul>
+						<li><a href="admin.html"><i class="zmdi zmdi-account-o"></i>Administrador</a></li>
+						<li><a href="provider.html"><i class="zmdi zmdi-accounts-add"></i>Proveedores</a></li>
+						<li><a href="dispatcher.html"><i class="zmdi zmdi-accounts-outline"></i>Despachadores</a>
+						</li>
+						<li><a href="client.html"><i class="zmdi zmdi-accounts-alt"></i>Clientes</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="#"><i class="zmdi zmdi-wrench"></i>Ajustes</a>
+					<ul>
+						<li><a href="history.html"><i class="zmdi zmdi-time-restore"></i>Historial</a></li>
+					</ul>
+				</li>
+			</ul>
+		</nav>
+	</header>
+	<section class="full-width header-well">
+		<div class="center-icon">
+			<i class="zmdi zmdi-shopping-cart"></i>
+		</div>
+		<div class="mdl-tabs__panel is-active" id="tabListProvider">
+			<div class="mdl-grid">
+				<div class="mdl-cell mdl-cell--12-col">
+					<div class="full-width panel mdl-shadow--2dp">
+						<div class="full-width panel-tittle bg-success text-center tittles">
+							Lista de Pedidos
+						</div>
+						<div class="full-width panel-content">
+							<table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp full-width">
+								<thead>
+									<tr>
+										<th>ID Pedido</th>
+										<th>Detalles</th>
+										<th>Acciones</th>
+									</tr>
+								</thead>
+								<tbody id="order-list">
+									<tr>
+										<td colspan="3" class="text-center">
+											No hay pedidos registrados.
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<script>
+		document.getElementById("saleForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const clientName = document.getElementById("clientName").value;
+    const productId = document.getElementById("productId").value;
+    const quantity = document.getElementById("quantity").value;
+
+    const response = await fetch("register_sale.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ clientName, productId, quantity })
+    });
+
+    const data = await response.json();
+    if (data.success) {
+        alert("Venta registrada con éxito.");
+        // Opcional: Redirigir o limpiar el formulario
+    } else {
+        alert(data.message);
+    }
+});
+		document.addEventListener("DOMContentLoaded", function () {
+			const loggedUserElement = document.getElementById("loggedUser");
+			const userFullName = localStorage.getItem("loggedInUser") || "Usuario no identificado";
+			loggedUserElement.innerText = userFullName;
+
+			const menuToggle = document.getElementById("menuToggle");
+			const mainNav = document.getElementById("mainNav");
+
+			menuToggle.addEventListener("click", function () {
+				mainNav.classList.toggle("open");
+			});
+
+			document.addEventListener("click", function (event) {
+				if (!mainNav.contains(event.target) && !menuToggle.contains(event.target)) {
+					mainNav.classList.remove("open");
+				}
+			});
+
+			const loadOrders = () => {
+				const ordersTableBody = document.getElementById("order-list");
+				const orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+				ordersTableBody.innerHTML = ""; // Limpiar tabla antes de cargar
+
+				if (orders.length > 0) {
+					orders.forEach((order, index) => {
+						const row = document.createElement("tr");
+						row.innerHTML = `
+                    <td>${order.id}</td>
+                    <td>${order.products.map(product => `${product.name} (${product.quantity})`).join(", ")}</td>
+                    <td>${order.date}</td>
+                    <td>
+                        <button class="mdl-button mdl-js-button mdl-js-ripple-effect delete-order" data-index="${index}">
+                            Eliminar
+                        </button>
+                    </td>
+                `;
+						ordersTableBody.appendChild(row);
+
+						// Agregar funcionalidad para eliminar
+						row.querySelector(".delete-order").addEventListener("click", function () {
+							deleteOrder(index);
+						});
+					});
+				} else {
+					ordersTableBody.innerHTML = `<tr><td colspan="4" class="text-center">No hay pedidos registrados</td></tr>`;
+				}
+			};
+
+			const deleteOrder = (index) => {
+				const orders = JSON.parse(localStorage.getItem("orders")) || [];
+				orders.splice(index, 1);
+				localStorage.setItem("orders", JSON.stringify(orders));
+				loadOrders(); // Recargar la tabla
+				Swal.fire("Eliminado", "El pedido ha sido eliminado correctamente.", "success");
+			};
+
+			loadOrders();
+		});
+		document.addEventListener("DOMContentLoaded", function () {
+			const ordersTableBody = document.getElementById("order-list");
+			const orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+			const loadOrders = () => {
+				ordersTableBody.innerHTML = ""; // Limpiar la tabla
+
+				if (orders.length > 0) {
+					orders.forEach((order, index) => {
+						const row = document.createElement("tr");
+						row.innerHTML = `
+                    <td>${order.id}</td>
+                    <td>${order.products.map(product => `${product.name} (${product.quantity})`).join(", ")}</td>
+                    <td>
+                        <i class="zmdi zmdi-delete action-icon" title="Eliminar Pedido" data-action="delete" data-index="${index}"></i>
+                        <i class="zmdi zmdi-download action-icon" title="Descargar CSV" data-action="download" data-index="${index}"></i>
+                        <i class="zmdi zmdi-plus-circle action-icon" title="Agregar al Inventario" data-action="add" data-index="${index}"></i>
+                    </td>
+                `;
+						ordersTableBody.appendChild(row);
+					});
+				} else {
+					ordersTableBody.innerHTML = `<tr><td colspan="3" class="text-center">No hay pedidos registrados</td></tr>`;
+				}
+			};
+
+			const deleteOrder = (index) => {
+				orders.splice(index, 1);
+				localStorage.setItem("orders", JSON.stringify(orders));
+				loadOrders();
+				Swal.fire("Eliminado", "El pedido ha sido eliminado correctamente.", "success");
+			};
+
+			const downloadOrder = (index) => {
+				const order = orders[index];
+				const csvContent = [
+					"ID Producto,Nombre del Producto,Cantidad,Proveedor,Fecha",
+					...order.products.map(product => `${product.id},${product.name},${product.quantity},${product.provider},${order.date}`),
+				].join("\n");
+
+				const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+				const link = document.createElement("a");
+				link.href = URL.createObjectURL(blob);
+				link.download = `pedido_${order.id}.csv`;
+				link.click();
+			};
+
+			const addToInventory = (index) => {
+				const inventory = JSON.parse(localStorage.getItem("inventory")) || [];
+				const order = orders[index];
+
+				order.products.forEach(product => {
+					const existingProduct = inventory.find(item => item.id === product.id);
+					if (existingProduct) {
+						existingProduct.stock += parseInt(product.quantity, 10);
+					} else {
+						inventory.push({
+							id: product.id,
+							name: product.name,
+							stock: parseInt(product.quantity, 10),
+							provider: product.provider,
+						});
+					}
+				});
+
+				localStorage.setItem("inventory", JSON.stringify(inventory));
+				orders.splice(index, 1);
+				localStorage.setItem("orders", JSON.stringify(orders));
+				loadOrders();
+				Swal.fire("Completado", "Los productos se han agregado al inventario.", "success");
+			};
+
+			// Delegación de eventos para manejar íconos
+			ordersTableBody.addEventListener("click", function (event) {
+				const target = event.target;
+				const action = target.dataset.action;
+				const index = target.dataset.index;
+
+				if (!action || index === undefined) return;
+
+				if (action === "delete") deleteOrder(index);
+				if (action === "download") downloadOrder(index);
+				if (action === "add") addToInventory(index);
+			});
+
+			loadOrders();
+		});
+
+
+		document.addEventListener("DOMContentLoaded", function () {
+			const userFullName = localStorage.getItem("loggedInUser") || "Usuario no identificado";
+			document.getElementById("loggedUser").innerText = userFullName;
+		});
+
+		document.getElementById("btn-exit")?.addEventListener("click", function () {
+			localStorage.removeItem("loggedInUser");
+			window.location.href = "login.html";
+		});
+		const loadOrders = () => {
+			const ordersTableBody = document.getElementById("order-list");
+			const orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+			// Limpiar la tabla
+			ordersTableBody.innerHTML = "";
+
+			if (orders.length > 0) {
+				orders.forEach((order, index) => {
+					const row = document.createElement("tr");
+					row.innerHTML = `
+                <td>${order.id}</td>
+                <td>${order.client.name}</td>
+                <td>${order.products.map(product => `${product.name} (${product.quantity})`).join(", ")}</td>
+                <td>${order.date}</td>
+                <td>
+                    <button class="mdl-button mdl-js-button mdl-js-ripple-effect delete-order" data-index="${index}">
+                        Eliminar
+                    </button>
+                </td>
+            `;
+					ordersTableBody.appendChild(row);
+
+					// Agregar funcionalidad para eliminar
+					row.querySelector(".delete-order").addEventListener("click", function () {
+						deleteOrder(index);
+					});
+				});
+			} else {
+				const noDataRow = document.createElement("tr");
+				noDataRow.innerHTML = `<td colspan="4" class="text-center">No hay pedidos registrados</td>`;
+				ordersTableBody.appendChild(noDataRow);
+			}
+		};
+
+		const deleteOrder = (index) => {
+			const orders = JSON.parse(localStorage.getItem("orders")) || [];
+			orders.splice(index, 1);
+			localStorage.setItem("orders", JSON.stringify(orders));
+			loadOrders(); // Recargar la tabla
+		};
+
+		const newOrder = {
+			id: `ORDER-${Date.now()}`,
+			client: {
+				id: selectedClient.id,
+				name: selectedClient.name,
+			},
+			products: currentOrder.map(product => ({
+				id: product.id,
+				name: product.name,
+				quantity: product.quantity,
+				provider: product.provider,
+			})),
+			date: new Date().toLocaleString(), // Fecha actual
+		};
+
+		const downloadOrder = (index) => {
+			const orders = JSON.parse(localStorage.getItem("orders")) || [];
+			const order = orders[index];
+
+			const currentDate = new Date().toISOString().split("T")[0];
+
+			const csvContent = [
+				"ID Producto,Nombre del Producto,Cantidad,Proveedor,Fecha",
+				...order.products.map((product) => {
+					const providers = JSON.parse(localStorage.getItem("providers")) || [];
+					const providerName = providers.find((p) => p.id === product.provider)?.name || "Proveedor desconocido";
+					const quantity = product.quantity ?? 0;
+					const date = product.date || currentDate;
+					return `${product.id},${product.name},${quantity},${providerName},${date}`;
+				}),
+			].join("\n");
+
+			const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+			const link = document.createElement("a");
+			link.href = URL.createObjectURL(blob);
+			link.download = `pedido_${order.id}.csv`;
+			link.click();
+		};
+
+		const submitOrder = (index) => {
+			const orders = JSON.parse(localStorage.getItem("orders")) || [];
+			const inventory = JSON.parse(localStorage.getItem("inventory")) || [];
+			const order = orders[index];
+
+			order.products.forEach((product) => {
+				const existingProduct = inventory.find((item) => item.id === product.id);
+				if (existingProduct) {
+					existingProduct.stock += product.stock || 0;
+				} else {
+					inventory.push({
+						id: product.id,
+						name: product.name,
+						stock: product.stock || 0,
+						provider: product.provider,
+						date: product.date || new Date().toISOString().split("T")[0],
+					});
+				}
+			});
+
+			localStorage.setItem("inventory", JSON.stringify(inventory));
+			orders.splice(index, 1);
+			localStorage.setItem("orders", JSON.stringify(orders));
+			loadOrders();
+			Swal.fire("Completado", "El pedido ha sido registrado en el inventario.", "success");
+		};
+
+		const setupEventListeners = () => {
+			orderList.addEventListener("click", (event) => {
+				const target = event.target.closest(".mdl-button");
+				if (!target) return;
+
+				const index = target.dataset.index;
+				if (target.classList.contains("delete-order")) {
+					deleteOrder(index);
+				} else if (target.classList.contains("download-order")) {
+					downloadOrder(index);
+				} else if (target.classList.contains("submit-order")) {
+					submitOrder(index);
+				}
+			});
+		};
+
+		initializeStorage();
+		loadOrders();
+		setupEventListeners();
+		ds
+
+		// Obtener la fecha actual en formato YYYY-MM-DD
+		const currentDate = new Date().toISOString().split("T")[0];
+
+		// Construir contenido del CSV
+		const csvContent = [
+			"ID Producto,Nombre del Producto,Cantidad,Proveedor,Fecha",
+			...order.products.map((product) => {
+				const providers = JSON.parse(localStorage.getItem("providers")) || [];
+				const providerName = providers.find((p) => p.id === product.provider)?.name || "Proveedor desconocido";
+				const quantity = product.quantity ?? 0;
+				const date = product.date || currentDate;
+				return `${product.id},${product.name},${quantity},${providerName},${date}`;
+			}),
+		].join("\n");
+
+		document.addEventListener("DOMContentLoaded", function () {
+			const menuToggle = document.getElementById("menuToggle");
+			const mainNav = document.getElementById("mainNav");
+
+			// Mostrar/ocultar el menú al hacer clic en el botón
+			menuToggle.addEventListener("click", function () {
+				mainNav.classList.toggle("open"); // Alterna entre mostrar y ocultar el menú
+			});
+
+			// Cerrar el menú al hacer clic fuera de él
+			document.addEventListener("click", function (event) {
+				if (!mainNav.contains(event.target) && !menuToggle.contains(event.target)) {
+					mainNav.classList.remove("open");
+				}
+			});
+		});
+		document.addEventListener("DOMContentLoaded", function () {
+			const ordersTableBody = document.getElementById("orders-table-body");
+			const orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+			// Cargar pedidos en la tabla
+			if (orders.length > 0) {
+				orders.forEach(order => {
+					const row = document.createElement("tr");
+					row.innerHTML = `
+                <td>${order.id}</td>
+                <td>${order.client.name}</td>
+                <td>${order.products.map(product => `${product.name} (${product.quantity})`).join(", ")}</td>
+                <td>${order.date}</td>
+            `;
+					ordersTableBody.appendChild(row);
+				});
+			} else {
+				const noDataRow = document.createElement("tr");
+				noDataRow.innerHTML = `
+            <td colspan="4" class="text-center">No hay pedidos registrados</td>
+        `;
+				ordersTableBody.appendChild(noDataRow);
+			}
+		});
+	</script>
+</body>
+
+</html>

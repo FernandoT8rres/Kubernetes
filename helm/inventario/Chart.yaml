@@ -1,0 +1,12 @@
+apiVersion: v2
+name: inventario
+description: Sistema de inventario para control de productos
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+keywords:
+  - inventario
+  - microservices
+  - kubernetes
+maintainers:
+  - name: Fernando Torres

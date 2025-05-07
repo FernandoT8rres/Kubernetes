@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+  namespace: inventario-system
+  labels:
+    app: inventario
+    tier: backend
+spec:
+  ports:
+  - port: 9000
+    targetPort: 9000
+  selector:
+    app: inventario
+    tier: backend

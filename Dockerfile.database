@@ -1,0 +1,13 @@
+FROM mysql:8.0
+
+# Variables de entorno para la base de datos
+ENV MYSQL_ROOT_PASSWORD=12345678
+ENV MYSQL_DATABASE=sci_db
+ENV MYSQL_USER=inventario_user
+ENV MYSQL_PASSWORD=inventario_password
+
+# Copiar script SQL de inicialización
+COPY BD.sql /docker-entrypoint-initdb.d/
+
+# Exponer puerto MySQL
+EXPOSE 3306

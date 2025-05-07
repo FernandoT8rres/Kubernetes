@@ -1,0 +1,30 @@
+FROM php:8.0-apache
+
+# Instalar dependencias
+RUN apt-get update && apt-get install -y \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    zip \
+    unzip \
+    git
+
+# Configurar extensiones PHP
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg
+RUN docker-php-ext-install -j$(nproc) gd mysqli pdo pdo_mysql
+
+# Habilitar mod_rewrite para Apache
+RUN a2enmod rewrite
+
+# Copiar archivos de la aplicación
+COPY . /var/www/html/
+COPY ./kubernetes/frontend/apache-config.conf /etc/apache2/sites-available/000-default.conf
+
+# Establecer permisos
+RUN chown -R www-data:www-data /var/www/html
+
+# Exponer puerto
+EXPOSE 80
+
+# Iniciar Apache
+CMD ["apache2-foreground"]

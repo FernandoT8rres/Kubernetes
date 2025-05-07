@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <title>Login</title>
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+  <div class="lg-container">
+    <form id="loginForm">
+      <img src="assets/img/cfe-logo.png" alt="logo" class="lg-logo">
+      <div id="user">
+        <label for="loginUsername"><b>Usuario</b></label>
+        <br>
+        <input type="text" placeholder="Ingresa Usuario" id="loginUsername" required>
+      </div>
+      <div class="password">
+        <label for="loginPassword"><b>Contraseña</b></label>
+        <br>
+        <input type="password" placeholder="Ingresa Contraseña" id="loginPassword" required>
+      </div>
+      <div class="Login">
+        <button type="submit" id="loginButton">Ingresar</button>
+      </div>
+      <div class="remember">
+        <input type="checkbox" checked="checked" name="remember"> Recuérdame
+      </div>
+    </form>
+  </div>
+  <script>
+document.addEventListener("DOMContentLoaded", function () {
+    const loginForm = document.getElementById("loginForm");
+
+    loginForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const username = document.getElementById("loginUsername").value.trim();
+        const password = document.getElementById("loginPassword").value.trim();
+
+        if (!username || !password) {
+            alert("Por favor, ingresa usuario y contraseña.");
+            return;
+        }
+
+        try {
+            const response = await fetch("api/authenticate.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.success) {
+                    localStorage.setItem("loggedInUser ", data.name);
+                    window.location.href = "home.html";
+                    return;
+                } else {
+                    alert(data.message || "Credenciales inválidas.");
+                }
+            } else {
+                alert("Error de servidor: " + response.statusText);
+            }
+        } catch (error) {
+            console.warn("Error autenticando con la base de datos:", error);
+        }
+    });
+});
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const loginForm = document.getElementById("loginForm");
+
+      // Sincronizar usuarios desde la base de datos al LocalStorage
+      async function syncUsers() {
+        try {
+          const response = await fetch("api/sync_users.php");
+          if (response.ok) {
+            const data = await response.json();
+            localStorage.setItem("users", JSON.stringify(data.users || []));
+            localStorage.setItem("dispatchers", JSON.stringify(data.dispatchers || []));
+          } else {
+            console.error("Error sincronizando usuarios:", response.statusText);
+          }
+        } catch (error) {
+          console.error("Error sincronizando usuarios:", error);
+        }
+      }
+      // Llamar a la sincronización al cargar la página
+      syncUsers();
+
+      // Manejar el evento de envío del formulario
+      loginForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const username = document.getElementById("loginUsername").value.trim();
+        const password = document.getElementById("loginPassword").value.trim();
+
+        if (!username || !password) {
+          alert("Por favor, ingresa usuario y contraseña.");
+          return;
+        } 
+
+        // Intentar autenticación online
+        try {
+          const response = await fetch("api/authenticate.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password }),
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            if (data.success) {
+              localStorage.setItem("loggedInUser", data.name);
+              window.location.href = "home.html";
+              return;
+            } else {
+              alert(data.message || "Credenciales inválidas.");
+            }
+          } else {
+            alert("Error de servidor: " + response.statusText);
+          }
+        } catch (error) {
+          console.warn("Error autenticando con la base de datos:", error);
+        }
+
+        // Autenticación offline con LocalStorage
+        const users = JSON.parse(localStorage.getItem("users")) || [];
+        const dispatchers = JSON.parse(localStorage.getItem("dispatchers")) || [];
+
+        const user = users.find(u => u.username === username && u.password === password);
+        const dispatcher = dispatchers.find(d => d.username === username && d.password === password);
+
+        if (user || dispatcher) {
+          const loggedInUser = user ? user.name : dispatcher.name;
+          localStorage.setItem("loggedInUser", loggedInUser);
+          window.location.href = "home.html";
+        } else {
+          alert("Credenciales incorrectas. Inténtalo nuevamente.");
+        }
+      });
+    });
+  </script>
+
+
+</body>
+
+</html>

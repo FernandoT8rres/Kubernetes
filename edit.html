@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Editar Inventario</title>
+	<link rel="stylesheet" href="css/normalize.css">
+	<link rel="stylesheet" href="css/sweetalert2.css">
+	<link rel="stylesheet" href="css/material.min.css">
+	<link rel="stylesheet" href="css/material-design-iconic-font.min.css">
+	<link rel="stylesheet" href="css/jquery.mCustomScrollbar.css">
+	<link rel="stylesheet" href="css/main.css">
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<script>window.jQuery || document.write('<script src="js/jquery-1.11.2.min.js"><\/script>')</script>
+	<script src="js/material.min.js"></script>
+	<script src="js/sweetalert2.min.js"></script>
+	<script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
+	<script src="js/main.js"></script>
+	<script type="module" src="js/history.js"></script>
+
+</head>
+<style>
+    .center-icon {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        min-height: 100vh;
+        font-family: Arial, sans-serif;
+    }
+
+    section {
+        width: 100%;
+        max-width: 1200px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .tile {
+        width: calc(33.333% - 20px);
+        margin: 10px;
+        padding: 20px;
+        background-color: #f4f4f4;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgb(77, 184, 106);
+        transition: transform 0.3s ease;
+        cursor: pointer;
+    }
+
+    .tile:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgb(77, 184, 106);
+    }
+
+    .tile i {
+        font-size: 48px;
+        margin-bottom: 10px;
+        color: #4CAF50;
+    }
+
+    .tile-text {
+        font-size: 14px;
+    }
+
+    .tile-text small {
+        font-size: 12px;
+        color: #666;
+    }
+
+    /* Responsive styles */
+    @media (max-width: 768px) {
+        nav ul {
+            flex-direction: column;
+        }
+
+        section {
+            flex-direction: column;
+        }
+
+        .tile {
+            width: 90%;
+        }
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    header {
+        background-color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+    }
+
+    nav {
+
+        display: grid;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        align-content: center;
+        padding: 10px 20px;
+    }
+
+    nav ul {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0;
+        padding: 0;
+        transition: all .3s ease-in-out;
+        border-radius: 5px;
+    }
+
+    nav ul li {
+        position: relative;
+        margin: 0 10px;
+    }
+
+    nav ul li a {
+        text-decoration: none;
+        color: black;
+        padding: 10px 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+    nav ul li a:hover {
+        background-color: rgba(40, 167, 69, 0.1);
+        color: #28a745;
+        border-radius: 5px;
+        transform: translateX(5px);
+    }
+
+    nav ul li a span {
+
+        display: block;
+        height: 100%;
+        width: 100%;
+        left: 0;
+        position: absolute;
+        top: -55px;
+        z-index: -1;
+        transition: all 0.3s ease;
+    }
+
+    nav ul li:hover>ul {
+        display: block;
+    }
+
+    nav ul li ul {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: #000000;
+        padding: 0;
+        margin: 0;
+        width: 200px;
+        z-index: 10;
+    }
+
+    nav ul li ul li {
+        text-align: left;
+    }
+
+    nav ul li ul li a {
+        padding: 10px 15px;
+        color: black;
+        text-align: left;
+        display: flex;
+        gap: 10px;
+    }
+
+    nav ul li ul li a:hover {
+        background-color: rgba(40, 167, 69, 0.1);
+        color: #28a745;
+        transform: translateX(5px);
+    }
+
+    nav ul li ul {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: white;
+        padding: 10px 0;
+        margin: 0;
+        width: 240px;
+        text-align: center;
+        z-index: 10;
+    }
+
+    nav ul li:hover>ul {
+        display: block;
+    }
+
+    nav ul li ul li a {
+        padding: 10px 20px;
+        color: black;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    nav ul li ul li a:hover {
+        background-color: rgba(40, 167, 69, 0.1);
+        color: #28a745;
+        border-radius: 5px;
+        transform: translateX(5px);
+    }
+
+    .user-info {
+        color: black;
+        margin-top: auto;
+        padding: 10px 15px;
+    }
+
+    @media (max-width: 768px) {
+        nav ul li ul {
+            width: 100%;
+            left: 0;
+            transform: none;
+        }
+    }
+
+
+    /* Responsive styles */
+    @media (max-width: 768px) {
+        nav ul {
+            flex-direction: column;
+            width: 100%;
+        }
+
+        nav ul li {
+            width: 100%;
+            text-align: center;
+        }
+
+        nav ul li ul {
+            position: static;
+        }
+    }
+
+    .logo {
+        display: flex;
+        height: 200px;
+        margin-right: 15px;
+    }
+
+    /* Botón hamburguesa */
+    .menu-toggle {
+        display: none;
+        background: none;
+        border: none;
+        font-size: 28px;
+        cursor: pointer;
+        position: fixed;
+        left: 20px;
+        top: 20px;
+        z-index: 20;
+        color: #333;
+    }
+
+    /* Menú desplegable en dispositivos móviles */
+    @media (max-width: 768px) {
+        .menu-toggle {
+            display: block;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 300px;
+            height: 100%;
+            background-color: white;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.4s ease, left 0.4s ease;
+            z-index: 15;
+        }
+
+        nav.open {
+            left: 0;
+            transform: translateX(0);
+        }
+
+        .user-info {
+            padding: 20px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #666;
+            background-color: #f9f9f9;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        nav ul {
+            flex-direction: column;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+            width: 100%;
+        }
+
+        nav ul li {
+            width: 100%;
+            text-align: left;
+        }
+
+        nav ul li a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 20px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+            text-decoration: none;
+            border-bottom: 1px solid #eaeaea;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+            transform: translateX(5px);
+        }
+
+        nav ul li ul {
+            display: none;
+            padding-left: 20px;
+            background-color: white;
+        }
+
+        nav ul li:hover>ul {
+            display: block;
+        }
+
+        nav ul li ul li a {
+            padding: 10px 20px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        nav ul li ul li a:hover {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+        }
+    }
+    
+    /* Estilos adicionales para la búsqueda y resultados */
+    .search-container {
+        width: 100%;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+    
+    .search-input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+        margin-bottom: 15px;
+    }
+    
+    .search-results {
+        max-height: 400px;
+        overflow-y: auto;
+        margin-top: 20px;
+    }
+    
+    .full-width {
+        width: 100%;
+    }
+    
+    .back-button {
+        margin-bottom: 15px;
+    }
+</style>
+
+</head>
+<body>
+	<header>
+		<div class="logo">
+			<img src="assets/img/cfe-logo.png" alt="logo">
+		</div>
+		<button class="menu-toggle" id="menuToggle">
+			<i class="zmdi zmdi-menu"></i>
+		</button>
+		<nav id="mainNav">
+			<div class="user-info">
+				<span>Bienvenido: <strong id="loggedUser">Cargando...</strong></span>
+			</div>
+			<ul>
+				<li><a href="home.html"><i class="zmdi zmdi-view-dashboard"></i>Inicio</a></li>
+				<li>
+					<a href="#"><i class="zmdi zmdi-case"></i>Administración</a>
+					<ul>
+						<li><a href="providers.html"><i class="zmdi zmdi-truck"></i>Generar Entrada</a></li>
+						<li><a href="sales.html"><i class="zmdi zmdi-shopping-cart"></i>Entradas</a></li>
+						<li><a href="generate.html"><i class="zmdi zmdi-comment-edit"></i>Generar Salida</a></li>
+						<li><a href="exits.html"><i class="zmdi zmdi-square-right"></i>Salidas</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="#"><i class="zmdi zmdi-local-store"></i>Almacén</a>
+					<ul>
+						<li><a href="inventory.html"><i class="zmdi zmdi-local-store"></i>Ver Almacén</a></li>
+						<li><a href="products.html"><i class="zmdi zmdi-plus-circle"></i>Registrar Producto</a></li>
+						<li><a href="edit.html"><i class="zmdi zmdi-edit"></i>Editar Producto</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="#"><i class="zmdi zmdi-face"></i>Usuario</a>
+					<ul>
+						<li><a href="admin.html"><i class="zmdi zmdi-account-o"></i>Administrador</a></li>
+						<li><a href="provider.html"><i class="zmdi zmdi-accounts-add"></i>Proveedores</a></li>
+						<li><a href="dispatcher.html"><i class="zmdi zmdi-accounts-outline"></i>Despachadores</a>
+						</li>
+						<li><a href="client.html"><i class="zmdi zmdi-accounts-alt"></i>Clientes</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="#"><i class="zmdi zmdi-wrench"></i>Ajustes</a>
+					<ul>
+						<li><a href="history.html"><i class="zmdi zmdi-time-restore"></i>Historial</a></li>
+					</ul>
+				</li>
+			</ul>
+		</nav>
+	</header>
+	<!-- Encabezado -->
+	<section class="full-width header-well">
+		<div class="center-icon full-width header-well-icon">
+			<i class="zmdi zmdi-edit"></i>
+		</div>
+
+	</section>
+	
+	<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+		<div class="mdl-tabs__panel is-active" id="tabNewProvider">
+			<div class="mdl-grid">
+				<div class="mdl-cell mdl-cell--12-col">
+					<div class="full-width panel mdl-shadow--2dp">
+						<div class="full-width panel-tittle bg-primary text-center tittles">
+							Edición de Productos
+						</div>
+						
+						<!-- Contenedor de búsqueda -->
+						<div id="searchContainer" class="full-width panel-content">
+                            <br>
+							<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label full-width">
+								<input class="mdl-textfield__input" type="text" id="searchProduct">
+                                <br>
+								<label class="mdl-textfield__label" for="searchProduct">Buscar producto por código o nombre</label>
+							</div>
+							
+							<div id="searchResults" class="search-results">
+								<!-- Aquí se mostrarán los resultados de la búsqueda -->
+							</div>
+						</div>
+						
+						<!-- Contenedor de formulario (inicialmente oculto) -->
+						<div id="formContainer" class="full-width panel-content" style="display: none;">
+							<button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect back-button" id="backToSearch">
+								<i class="zmdi zmdi-arrow-left"></i> Volver a la búsqueda
+							</button>
+							
+							<form id="editForm">
+								<div class="mdl-grid">
+									<!-- ID del Producto (oculto) -->
+									<input type="hidden" id="product-id">
+									<!-- Código -->
+									<div class="mdl-cell mdl-cell--6-col">
+										<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+											<input class="mdl-textfield__input" type="text" id="productCode" required>
+											<label class="mdl-textfield__label" for="productCode">Código</label>
+										</div>
+									</div>
+									<!-- Nombre del Producto -->
+									<div class="mdl-cell mdl-cell--6-col">
+										<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+											<input class="mdl-textfield__input" type="text" id="productName" required>
+											<label class="mdl-textfield__label" for="productName">Nombre del Producto</label>
+										</div>
+									</div>
+									<!-- Stock -->
+									<div class="mdl-cell mdl-cell--6-col">
+										<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+											<input class="mdl-textfield__input" type="number" id="productStock" min="0" required>
+											<label class="mdl-textfield__label" for="productStock">Unidades en Stock</label>
+										</div>
+									</div>
+									<!-- Stock Mínimo -->
+									<div class="mdl-cell mdl-cell--6-col">
+										<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+											<input class="mdl-textfield__input" type="number" id="productMinStock" min="0" required>
+											<label class="mdl-textfield__label" for="productMinStock">Stock Mínimo</label>
+										</div>
+									</div>
+									<!-- Stock Máximo -->
+									<div class="mdl-cell mdl-cell--6-col">
+										<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+											<input class="mdl-textfield__input" type="number" id="productMaxStock" min="0" required>
+											<label class="mdl-textfield__label" for="productMaxStock">Stock Máximo</label>
+										</div>
+									</div>
+									<!-- Precio Compra -->
+									<div class="mdl-cell mdl-cell--6-col">
+										<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+											<input class="mdl-textfield__input" type="text" id="productPricePurchase" required>
+											<label class="mdl-textfield__label" for="productPricePurchase">Precio de Compra</label>
+										</div>
+									</div>
+									<!-- IVA -->
+									<div class="mdl-cell mdl-cell--6-col">
+										<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+											<input class="mdl-textfield__input" type="text" id="productIVA" required>
+											<label class="mdl-textfield__label" for="productIVA">IVA</label>
+										</div>
+									</div>
+									<!-- Precio Venta -->
+									<div class="mdl-cell mdl-cell--6-col">
+										<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+											<input class="mdl-textfield__input" type="text" id="productPriceSale" required>
+											<label class="mdl-textfield__label" for="productPriceSale">Precio de Venta</label>
+										</div>
+									</div>
+									<!-- Fecha -->
+									<div class="mdl-cell mdl-cell--6-col">
+										<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+											<input class="mdl-textfield__input" type="date" id="productDate" required>
+											<label class="mdl-textfield__label" for="productDate">Fecha</label>
+										</div>
+									</div>
+									<!-- Almacén -->
+									<div class="mdl-cell mdl-cell--6-col">
+										<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+											<input class="mdl-textfield__input" type="text" id="storage" required>
+											<label class="mdl-textfield__label" for="storage">Almacén</label>
+										</div>
+									</div>
+									<!-- Anotaciones -->
+									<div class="mdl-cell mdl-cell--6-col">
+										<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+											<textarea class="mdl-textfield__input" id="productRemarks"></textarea>
+											<label class="mdl-textfield__label" for="productRemarks">Anotaciones</label>
+										</div>
+									</div>
+									<!-- Imagen -->
+									<div class="mdl-cell mdl-cell--12-col">
+										<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+											<input class="mdl-textfield__input" type="file" id="productImage" accept="image/*">
+											<label class="mdl-textfield__label" for="productImage">Imagen</label>
+										</div>
+									</div>
+								</div>
+								<p class="text-center">
+									<button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+										Guardar Cambios
+									</button>
+								</p>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Referencias a elementos del DOM
+    const searchInput = document.getElementById("searchProduct");
+    const searchResults = document.getElementById("searchResults");
+    const editForm = document.getElementById("editForm");
+    const productIdField = document.getElementById("product-id");
+    const searchContainer = document.getElementById("searchContainer");
+    const formContainer = document.getElementById("formContainer");
+    const backButton = document.getElementById("backToSearch");
+    
+    // Inicialización
+    formContainer.style.display = "none"; // Ocultar formulario inicialmente
+    checkSession(); // Verificar si hay sesión activa
+    
+    // Evento para buscar productos mientras se escribe
+    searchInput.addEventListener("input", debounce(searchProducts, 300));
+    
+    // Evento para volver a la búsqueda
+    backButton.addEventListener("click", function(e) {
+        e.preventDefault();
+        backToSearch();
+    });
+    
+    // Evento para enviar el formulario de edición
+    editForm.addEventListener("submit", function(e) {
+        e.preventDefault();
+        updateProduct();
+    });
+    
+    // Función para verificar si hay sesión activa
+    function checkSession() {
+        const loggedInUser = localStorage.getItem("loggedInUser");
+        if (!loggedInUser) {
+            // Redirigir al login si no hay sesión
+            window.location.href = "login.html";
+            return;
+        }
+        
+        document.getElementById("loggedUser").innerText = loggedInUser;
+    }
+    
+    // Función para buscar productos
+    function searchProducts() {
+        const searchTerm = searchInput.value.trim();
+        
+        if (searchTerm.length < 2) {
+            searchResults.innerHTML = "<p>Ingrese al menos 2 caracteres para buscar.</p>";
+            return;
+        }
+        
+        // Mostrar indicador de carga
+        searchResults.innerHTML = "<p>Buscando productos...</p>";
+        
+        fetch(`search_products.php?search=${encodeURIComponent(searchTerm)}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta del servidor');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success && data.products.length > 0) {
+                    displaySearchResults(data.products);
+                } else {
+                    searchResults.innerHTML = "<p>No se encontraron productos con ese criterio.</p>";
+                }
+            })
+            .catch(error => {
+                console.error("Error en la búsqueda:", error);
+                searchResults.innerHTML = `<p>Error al buscar productos: ${error.message}</p>`;
+            });
+    }
+    
+    // Función para mostrar los resultados de búsqueda
+    function displaySearchResults(products) {
+        searchResults.innerHTML = "";
+        
+        const table = document.createElement("table");
+        table.className = "mdl-data-table mdl-js-data-table mdl-shadow--2dp full-width";
+        
+        // Encabezados de tabla
+        const thead = document.createElement("thead");
+        thead.innerHTML = `
+            <tr>
+                <th class="mdl-data-table__cell--non-numeric">Código</th>
+                <th class="mdl-data-table__cell--non-numeric">Nombre</th>
+                <th>Stock</th>
+                <th>Stock Mín</th>
+                <th>Stock Máx</th>
+                <th>Acciones</th>
+            </tr>
+        `;
+        table.appendChild(thead);
+        
+        // Cuerpo de la tabla
+        const tbody = document.createElement("tbody");
+        products.forEach(product => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td class="mdl-data-table__cell--non-numeric">${product.codigo || '-'}</td>
+                <td class="mdl-data-table__cell--non-numeric">${product.nombre_producto || '-'}</td>
+                <td>${product.unidades_stock || '0'}</td>
+                <td>${product.stock_minimo || '0'}</td>
+                <td>${product.stock_maximo || '0'}</td>
+                <td>
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent edit-btn" 
+                            data-id="${product.id}">
+                        Editar
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+        table.appendChild(tbody);
+        
+        searchResults.appendChild(table);
+        
+        // Agregar eventos a los botones de editar
+        document.querySelectorAll(".edit-btn").forEach(button => {
+            button.addEventListener("click", function() {
+                const productId = this.getAttribute("data-id");
+                loadProductDetails(productId);
+            });
+        });
+        
+        // Actualizar los componentes MDL
+        if (window.componentHandler) {
+            componentHandler.upgradeAllRegistered();
+        }
+    }
+    
+    // Función para cargar los detalles del producto
+    function loadProductDetails(productId) {
+        // Mostrar indicador de carga
+        Swal.fire({
+            title: 'Cargando...',
+            text: 'Obteniendo datos del producto',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+        
+        fetch(`get_product.php?id=${productId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta del servidor');
+                }
+                return response.json();
+            })
+            .then(data => {
+                Swal.close();
+                if (data.success) {
+                    populateForm(data.product);
+                    showEditForm();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: data.message || 'No se pudo cargar el producto'
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.close();
+                console.error("Error al cargar detalles:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: `Error al cargar detalles del producto: ${error.message}`
+                });
+            });
+    }
+    
+    // Función para llenar el formulario con los datos del producto
+    function populateForm(product) {
+        // Asignar valores a los campos del formulario
+        productIdField.value = product.id;
+        document.getElementById("productCode").value = product.codigo || '';
+        document.getElementById("productName").value = product.nombre_producto || '';
+        document.getElementById("productStock").value = product.unidades_stock || 0;
+        document.getElementById("productMinStock").value = product.stock_minimo || 0;
+        document.getElementById("productMaxStock").value = product.stock_maximo || 0;
+        document.getElementById("productPricePurchase").value = product.precio_compra || '';
+        document.getElementById("productIVA").value = product.iva || '';
+        document.getElementById("productPriceSale").value = product.precio_venta || '';
+        document.getElementById("productDate").value = product.fecha || '';
+        document.getElementById("storage").value = product.almacen || '';
+        document.getElementById("productRemarks").value = product.Anotaciones || '';
+        
+        // Actualizar las clases para el correcto funcionamiento de Material Design Lite
+        document.querySelectorAll(".mdl-textfield").forEach(field => {
+            field.classList.add("is-dirty");
+            if (window.componentHandler) {
+                componentHandler.upgradeElement(field);
+            }
+        });
+    }
+    
+    // Función para mostrar el formulario de edición
+    function showEditForm() {
+        searchContainer.style.display = "none";
+        formContainer.style.display = "block";
+
+        // Asegurarnos de que MDL reconozca los elementos
+        if (window.componentHandler) {
+            componentHandler.upgradeAllRegistered();
+        }
+    }
+    
+    // Función para volver a la búsqueda
+    function backToSearch() {
+        searchContainer.style.display = "block";
+        formContainer.style.display = "none";
+        searchInput.value = "";
+        searchResults.innerHTML = "<p>Utilice la barra de búsqueda para encontrar productos.</p>";
+        editForm.reset();
+    }
+    
+    // Función para actualizar el producto
+    function updateProduct() {
+        // Validación básica
+        const requiredFields = ['productCode', 'productName', 'productStock', 'productMinStock', 'productMaxStock', 
+                                'productPricePurchase', 'productIVA', 'productPriceSale', 'productDate', 'storage'];
+        
+        let isValid = true;
+        requiredFields.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (!field.value.trim()) {
+                field.parentElement.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                field.parentElement.classList.remove('is-invalid');
+            }
+        });
+        
+        if (!isValid) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Campos incompletos',
+                text: 'Por favor complete todos los campos requeridos'
+            });
+            return;
+        }
+        
+        // Preparar los datos para enviar
+        const productData = {
+            id: productIdField.value,
+            codigo: document.getElementById("productCode").value,
+            nombre_producto: document.getElementById("productName").value,
+            unidades_stock: parseInt(document.getElementById("productStock").value) || 0,
+            stock_minimo: parseInt(document.getElementById("productMinStock").value) || 0,
+            stock_maximo: parseInt(document.getElementById("productMaxStock").value) || 0,
+            precio_compra: parseFloat(document.getElementById("productPricePurchase").value) || 0,
+            iva: document.getElementById("productIVA").value,
+            precio_venta: parseFloat(document.getElementById("productPriceSale").value) || 0,
+            fecha: document.getElementById("productDate").value,
+            almacen: document.getElementById("storage").value,
+            anotaciones: document.getElementById("productRemarks").value
+        };
+        
+        // Mostrar indicador de carga
+        Swal.fire({
+            title: 'Guardando...',
+            text: 'Actualizando información del producto',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+        
+        // Enviar datos al servidor
+        fetch('update_product.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(productData)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error en la respuesta del servidor');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                // Si hay una imagen para subir, enviarla ahora
+                const imageInput = document.getElementById("productImage");
+                if (imageInput.files.length > 0) {
+                    updateImage();
+                } else {
+                    // Si no hay imagen, mostrar mensaje de éxito
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Éxito!',
+                        text: 'Producto actualizado correctamente',
+                        confirmButtonText: 'Aceptar'
+                    }).then(() => {
+                        backToSearch();
+                    });
+                }
+            } else {
+                throw new Error(data.message || 'Error al actualizar el producto');
+            }
+        })
+        .catch(error => {
+            Swal.close();
+            console.error("Error al actualizar:", error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: `Error al actualizar: ${error.message}`
+            });
+        });
+    }
+    
+    // Función para actualizar la imagen
+    function updateImage() {
+        const imageInput = document.getElementById("productImage");
+        
+        if (imageInput.files.length === 0) {
+            return;
+        }
+        
+        const formData = new FormData();
+        formData.append('id', productIdField.value);
+        formData.append('image', imageInput.files[0]);
+        
+        fetch('update_image.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error en la respuesta del servidor');
+            }
+            return response.json();
+        })
+        .then(data => {
+            Swal.close();
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Éxito!',
+                    text: 'Producto e imagen actualizados correctamente',
+                    confirmButtonText: 'Aceptar'
+                }).then(() => {
+                    backToSearch();
+                });
+            } else {
+                throw new Error(data.message || 'Error al actualizar la imagen');
+            }
+        })
+        .catch(error => {
+            Swal.close();
+            console.error("Error al actualizar imagen:", error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: `Error al actualizar la imagen: ${error.message}`
+            });
+        });
+    }
+    
+    // Función debounce para evitar múltiples peticiones al escribir
+    function debounce(func, wait) {
+        let timeout;
+        return function() {
+            const context = this;
+            const args = arguments;
+            clearTimeout(timeout);
+            timeout = setTimeout(function() {
+                func.apply(context, args);
+            }, wait);
+        };
+    }
+    
+    // Mostrar mensaje inicial
+    searchResults.innerHTML = "<p>Utilice la barra de búsqueda para encontrar productos.</p>";
+});
+
+// Control del menú móvil
+document.addEventListener("DOMContentLoaded", function () {
+    const menuToggle = document.getElementById("menuToggle");
+    const mainNav = document.getElementById("mainNav");
+
+    if (menuToggle && mainNav) {
+        // Mostrar/ocultar el menú al hacer clic en el botón
+        menuToggle.addEventListener("click", function () {
+            mainNav.classList.toggle("open");
+        });
+
+        // Cerrar el menú al hacer clic fuera de él
+        document.addEventListener("click", function (event) {
+            if (!mainNav.contains(event.target) && !menuToggle.contains(event.target)) {
+                mainNav.classList.remove("open");
+            }
+        });
+    }
+});
+</script>
+</body>
+
+</html>

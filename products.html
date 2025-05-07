@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Registrar Producto</title>
+	<link rel="stylesheet" href="css/normalize.css">
+	<link rel="stylesheet" href="css/material.min.css">
+	<link rel="stylesheet" href="css/material-design-iconic-font.min.css">
+	<link rel="stylesheet" href="css/jquery.mCustomScrollbar.css">
+	<link rel="stylesheet" href="css/main.css">
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<script>window.jQuery || document.write('<script src="js/jquery-1.11.2.min.js"><\/script>')</script>
+	<script src="js/material.min.js"></script>
+	<script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
+	<script src="js/main.js"></script>
+	<script type="module" src="js/history.js"></script>
+
+</head>
+<style>
+    .mdl-tabs__panel {
+        position: absolute; 
+        top: 65%;
+        bottom: 50%;
+        left: 50%;
+        transform: translate(-50%, 0);
+        z-index: 10;
+        font-size: 48px;
+        margin-bottom: 100px;
+    }
+
+    .center-icon {
+        position: absolute;
+        top: 1%;
+        bottom: 50%;
+        left: 50%;
+        transform: translate(-50%, 0);
+        font-size: 48px;
+        margin-bottom: 100px;
+    }
+
+    @media (max-width: 768px) {
+        .center-icon {
+            font-size: 48px;
+        }
+    }
+
+
+    body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        min-height: 100vh;
+        font-family: Arial, sans-serif;
+    }
+
+    section {
+        width: 100%;
+        max-width: 1200px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .tile {
+        width: calc(33.333% - 20px);
+        margin: 10px;
+        padding: 20px;
+        background-color: #f4f4f4;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgb(77, 184, 106);
+        transition: transform 0.3s ease;
+        cursor: pointer;
+    }
+
+    .tile:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgb(77, 184, 106);
+    }
+
+    .tile i {
+        font-size: 48px;
+        margin-bottom: 10px;
+        color: #4CAF50;
+    }
+
+    .tile-text {
+        font-size: 14px;
+    }
+
+    .tile-text small {
+        font-size: 12px;
+        color: #666;
+    }
+
+    @media (max-width: 1440px) {
+
+        section {
+            flex-direction: column;
+        }
+
+        .tile {
+            width: 900%;
+        }
+    }
+
+    /* Responsive styles */
+    @media (max-width: 768px) {
+        nav ul {
+            flex-direction: column;
+        }
+
+        section {
+            flex-direction: column;
+        }
+
+        .tile {
+            width: 90%;
+        }
+    }
+
+    * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        header {
+            background-color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+        }
+
+        nav {
+
+            display: grid;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            align-content: center;
+            padding: 10px 20px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0;
+            padding: 0;
+            transition: all .3s ease-in-out;
+            border-radius: 5px;
+        }
+
+        nav ul li {
+            position: relative;
+            margin: 0 10px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: black;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+            border-radius: 5px;
+            transform: translateX(5px);
+        }
+
+        nav ul li a span {
+
+            display: block;
+            height: 100%;
+            width: 100%;
+            left: 0;
+            position: absolute;
+            top: -55px;
+            z-index: -1;
+            transition: all 0.3s ease;
+        }
+
+        nav ul li:hover>ul {
+            display: block;
+        }
+
+        nav ul li ul {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #000000;
+            padding: 0;
+            margin: 0;
+            width: 200px;
+            z-index: 10;
+        }
+
+        nav ul li ul li {
+            text-align: left;
+        }
+
+        nav ul li ul li a {
+            padding: 10px 15px;
+            color: black;
+            text-align: left;
+            display: flex;
+            gap: 10px;
+        }
+
+        nav ul li ul li a:hover {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+            transform: translateX(5px);
+        }
+
+        nav ul li ul {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: white;
+            padding: 10px 0;
+            margin: 0;
+            width: 240px;
+            text-align: center;
+            z-index: 10;
+        }
+
+        nav ul li:hover>ul {
+            display: block;
+        }
+
+        nav ul li ul li a {
+            padding: 10px 20px;
+            color: black;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        nav ul li ul li a:hover {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+            border-radius: 5px;
+            transform: translateX(5px);
+        }
+
+        .user-info {
+            color: black;
+            margin-top: auto;
+            padding: 10px 15px;
+        }
+
+        @media (max-width: 768px) {
+            nav ul li ul {
+                width: 100%;
+                left: 0;
+                transform: none;
+            }
+        }
+
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            nav ul li {
+                width: 100%;
+                text-align: center;
+            }
+
+            nav ul li ul {
+                position: static;
+            }
+        }
+
+        .logo {
+            display: flex;
+            height: 200px;
+            margin-right: 15px;
+        }
+
+        /* Botón hamburguesa */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            position: fixed;
+            left: 20px;
+            top: 20px;
+            z-index: 20;
+            color: #333;
+        }
+
+        /* Menú desplegable en dispositivos móviles */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            nav {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 300px;
+                height: 100%;
+                background-color: white;
+                box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+                transition: transform 0.4s ease, left 0.4s ease;
+                z-index: 15;
+            }
+
+            nav.open {
+                left: 0;
+                transform: translateX(0);
+            }
+
+            .user-info {
+                padding: 20px;
+                font-size: 16px;
+                font-weight: 600;
+                color: #666;
+                background-color: #f9f9f9;
+                border-bottom: 1px solid #eaeaea;
+            }
+
+            nav ul {
+                flex-direction: column;
+                padding: 0;
+                margin: 0;
+                list-style: none;
+                width: 100%;
+            }
+
+            nav ul li {
+                width: 100%;
+                text-align: left;
+            }
+
+            nav ul li a {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 15px 20px;
+                font-size: 16px;
+                font-weight: 500;
+                color: #333;
+                text-decoration: none;
+                border-bottom: 1px solid #eaeaea;
+                transition: background-color 0.3s ease, transform 0.3s ease;
+            }
+
+            nav ul li a:hover {
+                background-color: rgba(40, 167, 69, 0.1);
+                color: #28a745;
+                transform: translateX(5px);
+            }
+
+            nav ul li ul {
+                display: none;
+                padding-left: 20px;
+                background-color: white;
+            }
+
+            nav ul li:hover>ul {
+                display: block;
+            }
+
+            nav ul li ul li a {
+                padding: 10px 20px;
+                font-size: 14px;
+                color: #555;
+            }
+
+            nav ul li ul li a:hover {
+                background-color: rgba(40, 167, 69, 0.1);
+                color: #28a745;
+            }
+        }
+</style>
+
+</head>
+
+<body>
+	<header>
+		<div class="logo">
+			<img src="assets/img/cfe-logo.png" alt="logo">
+		</div>
+		<button class="menu-toggle" id="menuToggle">
+			<i class="zmdi zmdi-menu"></i>
+		</button>
+		<nav id="mainNav">
+			<div class="user-info">
+				<span>Bienvenido: <strong id="loggedUser">Cargando...</strong></span>
+			</div>
+			<ul>
+				<li><a href="home.html"><i class="zmdi zmdi-view-dashboard"></i>Inicio</a></li>
+				<li>
+					<a href="#"><i class="zmdi zmdi-case"></i>Administración</a>
+					<ul>
+						<li><a href="providers.html"><i class="zmdi zmdi-truck"></i>Generar Entrada</a></li>
+						<li><a href="sales.html"><i class="zmdi zmdi-shopping-cart"></i>Entradas</a></li>
+						<li><a href="generate.html"><i class="zmdi zmdi-comment-edit"></i>Generar Salida</a></li>
+						<li><a href="exits.html"><i class="zmdi zmdi-square-right"></i>Salidas</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="#"><i class="zmdi zmdi-local-store"></i>Almacén</a>
+					<ul>
+						<li><a href="inventory.html"><i class="zmdi zmdi-local-store"></i>Ver Almacén</a></li>
+						<li><a href="products.html"><i class="zmdi zmdi-plus-circle"></i>Registrar Producto</a></li>
+						<li><a href="edit.html"><i class="zmdi zmdi-edit"></i>Editar Producto</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="#"><i class="zmdi zmdi-face"></i>Usuario</a>
+					<ul>
+						<li><a href="admin.html"><i class="zmdi zmdi-account-o"></i>Administrador</a></li>
+						<li><a href="provider.html"><i class="zmdi zmdi-accounts-add"></i>Proveedores</a></li>
+						<li><a href="dispatcher.html"><i class="zmdi zmdi-accounts-outline"></i>Despachadores</a>
+						</li>
+						<li><a href="client.html"><i class="zmdi zmdi-accounts-alt"></i>Clientes</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="#"><i class="zmdi zmdi-wrench"></i>Ajustes</a>
+					<ul>
+						<li><a href="history.html"><i class="zmdi zmdi-time-restore"></i>Historial</a></li>
+					</ul>
+				</li>
+			</ul>
+		</nav>
+	</header>
+	<section class="full-width header-well">
+		<div class="center-icon">
+			<i class="zmdi zmdi-plus-circle"></i>
+		</div>
+		<div class="full-width header-well-text">
+			<p class="text-condensedLight"></p>
+		</div>
+		</div>
+		<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+			<div class="mdl-tabs__panel is-active" id="tabNewProduct">
+				<div class="mdl-grid">
+					<div class="mdl-cell mdl-cell--12-col">
+						<div class="full-width panel mdl-shadow--2dp">
+							<div class="full-width panel-tittle bg-primary text-center tittles">
+								Nuevo Producto
+							</div>
+							<div class="full-width panel-content">
+								<form id="productForm">
+									<div class="mdl-grid">
+										<!-- ID del Producto (opcional, se puede generar automáticamente) -->
+										<div class="mdl-cell mdl-cell--6-col">
+											<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+												<input class="mdl-textfield__input" type="text" id="productId" required>
+												<label class="mdl-textfield__label" for="productId">ID del Producto</label>
+											</div>
+										</div>
+										<!-- Código -->
+										<div class="mdl-cell mdl-cell--6-col">
+											<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+												<input class="mdl-textfield__input" type="text" id="productCode" required>
+												<label class="mdl-textfield__label" for="productCode">Código</label>
+											</div>
+										</div>
+										<!-- Nombre del Producto -->
+										<div class="mdl-cell mdl-cell--6-col">
+											<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+												<input class="mdl-textfield__input" type="text" id="productName" required>
+												<label class="mdl-textfield__label" for="productName">Nombre del Producto</label>
+											</div>
+										</div>
+										<!-- Stock -->
+										<div class="mdl-cell mdl-cell--6-col">
+											<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+												<input class="mdl-textfield__input" type="number" id="productStock" min="0" required>
+												<label class="mdl-textfield__label" for="productStock">Unidades en Stock</label>
+											</div>
+										</div>
+										<!-- Stock Mínimo -->
+										<div class="mdl-cell mdl-cell--6-col">
+											<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+												<input class="mdl-textfield__input" type="number" id="productMinStock" min="0" required>
+												<label class="mdl-textfield__label" for="productMinStock">Stock Mínimo</label>
+											</div>
+										</div>
+										<!-- Stock Máximo -->
+										<div class="mdl-cell mdl-cell--6-col">
+											<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+												<input class="mdl-textfield__input" type="number" id="productMaxStock" min="0" required>
+												<label class="mdl-textfield__label" for="productMaxStock">Stock Máximo</label>
+											</div>
+										</div>
+										<!-- Precio Compra -->
+										<div class="mdl-cell mdl-cell--6-col">
+											<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+												<input class="mdl-textfield__input" type="text" id="productPricePurchase" required>
+												<label class="mdl-textfield__label" for="productPricePurchase">Precio de Compra</label>
+											</div>
+										</div>
+										<!-- IVA -->
+										<div class="mdl-cell mdl-cell--6-col">
+											<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+												<input class="mdl-textfield__input" type="text" id="productIVA" required>
+												<label class="mdl-textfield__label" for="productIVA">IVA</label>
+											</div>
+										</div>
+										<!-- Precio Venta -->
+										<div class="mdl-cell mdl-cell--6-col">
+											<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+												<input class="mdl-textfield__input" type="text" id="productPriceSale" required>
+												<label class="mdl-textfield__label" for="productPriceSale">Precio de Venta</label>
+											</div>
+										</div>
+										<!-- Fecha -->
+										<div class="mdl-cell mdl-cell--6-col">
+											<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+												<input class="mdl-textfield__input" type="date" id="productDate" required>
+												<label class="mdl-textfield__label" for="productDate">Fecha</label>
+											</div>
+										</div>
+										<!-- Almacén -->
+										<div class="mdl-cell mdl-cell--6-col">
+											<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+												<input class="mdl-textfield__input" type="text" id="storage" required>
+												<label class="mdl-textfield__label" for="storage">Almacén</label>
+											</div>
+										</div>
+										<!-- Anotaciones -->
+										<div class="mdl-cell mdl-cell--6-col">
+											<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+												<textarea class="mdl-textfield__input" id="productRemarks"></textarea>
+												<label class="mdl-textfield__label" for="productRemarks">Anotaciones</label>
+											</div>
+										</div>
+										<!-- Imagen -->
+										<div class="mdl-cell mdl-cell--6-col">
+											<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+												<input class="mdl-textfield__input" type="file" id="productImage" accept="image/*">
+												<label class="mdl-textfield__label" for="productImage">Imagen</label>
+											</div>
+										</div>
+									</div>
+									<p class="text-center">
+										<button type="submit" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored bg-primary" id="btn-addProduct">
+											<i class="zmdi zmdi-plus"></i>
+										</button>
+										<div class="mdl-tooltip" for="btn-addProduct">Agregar Producto</div>
+									</p>
+									<p id="successMessage" style="display:none;color:green;">Producto registrado con éxito!</p>
+								</form>
+								
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<script>
+        // Script para manejar el formulario de productos
+document.addEventListener("DOMContentLoaded", function() {
+    // Verificar si el usuario está logueado
+    const userFullName = localStorage.getItem("loggedInUser") || "Usuario no identificado";
+    document.getElementById("loggedUser").innerText = userFullName;
+    
+    // Si no hay usuario logueado, redirigir al login
+    if (!localStorage.getItem("loggedInUser")) {
+        window.location.href = "login.html";
+    }
+
+    // Manejar el envío del formulario
+    const productForm = document.getElementById("productForm");
+    productForm.addEventListener("submit", function(e) {
+        e.preventDefault();
+        
+        // Crear objeto FormData para manejar la imagen
+        const formData = new FormData();
+        
+        // Agregar todos los campos del formulario
+        formData.append("productId", document.getElementById("productId").value);
+        formData.append("codigo", document.getElementById("productCode").value);
+        formData.append("nombre_producto", document.getElementById("productName").value);
+        formData.append("unidades_stock", document.getElementById("productStock").value);
+        formData.append("stock_minimo", document.getElementById("productMinStock").value);
+        formData.append("stock_maximo", document.getElementById("productMaxStock").value);
+        formData.append("precio_compra", document.getElementById("productPricePurchase").value);
+        formData.append("iva", document.getElementById("productIVA").value);
+        formData.append("precio_venta", document.getElementById("productPriceSale").value);
+        formData.append("fecha", document.getElementById("productDate").value);
+        formData.append("almacen", document.getElementById("storage").value);
+        formData.append("anotaciones", document.getElementById("productRemarks").value);
+        
+        // Manejar la imagen si se seleccionó una
+        const imageFile = document.getElementById("productImage").files[0];
+        if (imageFile) {
+            formData.append("imagen", imageFile);
+        }
+        
+        // Enviar los datos al servidor
+        fetch("save_product.php", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Mostrar mensaje de éxito
+                const successMessage = document.getElementById("successMessage");
+                successMessage.style.display = "block";
+                successMessage.textContent = data.message;
+                
+                // Limpiar el formulario
+                productForm.reset();
+                
+                // Ocultar el mensaje después de 3 segundos
+                setTimeout(() => {
+                    successMessage.style.display = "none";
+                }, 3000);
+            } else {
+                // Mostrar mensaje de error
+                alert("Error: " + data.message);
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("Ocurrió un error al guardar el producto. Por favor, intente nuevamente.");
+        });
+    });
+    
+    // Manejar el botón de salida
+    document.getElementById("btn-exit")?.addEventListener("click", function() {
+        localStorage.removeItem("loggedInUser");
+        window.location.href = "login.html";
+    });
+    
+    // Manejar el menú móvil
+    const menuToggle = document.getElementById("menuToggle");
+    const mainNav = document.getElementById("mainNav");
+
+    // Mostrar/ocultar el menú al hacer clic en el botón
+    menuToggle?.addEventListener("click", function() {
+        mainNav.classList.toggle("open");
+    });
+
+    // Cerrar el menú al hacer clic fuera de él
+    document.addEventListener("click", function(event) {
+        if (!mainNav.contains(event.target) && !menuToggle.contains(event.target)) {
+            mainNav.classList.remove("open");
+        }
+    });
+});
+
+	</script>
+
+</body>
+
+</html>

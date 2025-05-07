@@ -1,0 +1,124 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: inventario-system
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+      evaluation_interval: 15s
+    alerting:
+      alertmanagers:
+      - static_configs:
+        - targets:
+          # - alertmanager:9093
+    rule_files:
+      - /etc/prometheus/rules/*.rules
+    
+    scrape_configs:
+      - job_name: 'kubernetes-apiservers'
+        kubernetes_sd_configs:
+        - role: endpoints
+        scheme: https
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        relabel_configs:
+        - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+          action: keep
+          regex: default;kubernetes;https
+      
+      - job_name: 'kubernetes-nodes'
+        scheme: https
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        kubernetes_sd_configs:
+        - role: node
+        relabel_configs:
+        - action: labelmap
+          regex: __meta_kubernetes_node_label_(.+)
+        - target_label: __address__
+          replacement: kubernetes.default.svc:443
+        - source_labels: [__meta_kubernetes_node_name]
+          regex: (.+)
+          target_label: __metrics_path__
+          replacement: /api/v1/nodes/${1}/proxy/metrics
+      
+      - job_name: 'kubernetes-pods'
+        kubernetes_sd_configs:
+        - role: pod
+        relabel_configs:
+        - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+          action: keep
+          regex: true
+        - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+          action: replace
+          target_label: __metrics_path__
+          regex: (.+)
+        - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+          action: replace
+          regex: ([^:]+)(?::\d+)?;(\d+)
+          replacement: $1:$2
+          target_label: __address__
+        - action: labelmap
+          regex: __meta_kubernetes_pod_label_(.+)
+        - source_labels: [__meta_kubernetes_namespace]
+          action: replace
+          target_label: kubernetes_namespace
+        - source_labels: [__meta_kubernetes_pod_name]
+          action: replace
+          target_label: kubernetes_pod_name
+      
+      - job_name: 'kube-state-metrics'
+        static_configs:
+        - targets: ['kube-state-metrics.kube-system.svc.cluster.local:8080']
+      
+      - job_name: 'inventario-frontend'
+        static_configs:
+        - targets: ['frontend-service:80']
+      
+      - job_name: 'inventario-backend'
+        static_configs:
+        - targets: ['backend-service:9000']
+
+  rules.yml: |
+    groups:
+    - name: inventario-alerts
+      rules:
+      - alert: PodCrashLooping
+        expr: rate(kube_pod_container_status_restarts_total{namespace="inventario-system"}[5m]) * 60 * 5 > 5
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: Pod {{ $labels.pod }} is crash looping
+          description: Pod {{ $labels.pod }} in namespace {{ $labels.namespace }} is crash looping.
+          
+      - alert: PodNotReady
+        expr: sum by (pod, namespace) (kube_pod_status_ready{condition="true", namespace="inventario-system"}) < 1
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: Pod {{ $labels.pod }} not ready
+          description: Pod {{ $labels.pod }} in namespace {{ $labels.namespace }} has been in a non-ready state for more than 5 minutes.
+          
+      - alert: HighCPU
+        expr: sum(rate(container_cpu_usage_seconds_total{namespace="inventario-system"}[5m])) by (pod, namespace) > 0.8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: High CPU usage on {{ $labels.pod }}
+          description: Pod {{ $labels.pod }} in namespace {{ $labels.namespace }} has high CPU usage.
+          
+      - alert: HighMemory
+        expr: sum(container_memory_usage_bytes{namespace="inventario-system"}) by (pod, namespace) / sum(kube_pod_container_resource_limits_memory_bytes{namespace="inventario-system"}) by (pod, namespace) > 0.8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: High memory usage on {{ $labels.pod }}
+          description: Pod {{ $labels.pod }} in namespace {{ $labels.namespace }} has high memory usage.
